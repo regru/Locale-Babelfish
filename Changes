@@ -1,0 +1,6 @@
+Revision history for Perl extension Locale::Babelfish.
+
+0.01  Sat May 31 20:19:42 2014
+	- original version; created by h2xs 1.23 with options
+		-AX -n Locale::Babelfish -v 0.01
+
