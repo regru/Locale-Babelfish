@@ -8,5 +8,5 @@ WriteMakefile(
     PREREQ_PM         => {}, # e.g., Module::Name => 1.1
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Locale/Babelfish.pm', # retrieve abstract from module
-       AUTHOR         => 'Mironov Igor <mironov.igor@gmail.com>') : ()),
+       AUTHOR         => 'Mironov Igor <grif@cpan.org>') : ()),
 );

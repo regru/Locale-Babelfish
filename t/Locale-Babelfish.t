@@ -2,14 +2,13 @@ use strict;
 use Test::Deep;
 use Test::More tests => 16;
 
-use FindBin;
-use lib "$FindBin::Bin/../lib";
+use FindBin qw($Bin);
 
 use utf8;
 
 use_ok( 'Locale::Babelfish' ) or exit;
 
-my $dir = '.';
+my $dir = "$Bin";
 
 my $cfg;
 
@@ -32,7 +31,7 @@ cmp_ok( $l10n->t('test.simple', { dummy => ' test script ' } ) ,
  );
 
 cmp_ok( $l10n->t('test.dummy_key', { who => ' test script ' } ) ,
-        'eq', '[l10n:dummy_key]' , 'dummy_key'
+        'eq', '[Babelfish:dummy_key]' , 'dummy_key'
  );
 
 cmp_ok( $l10n->t('test.simple', { who => 'test script' } ) ,

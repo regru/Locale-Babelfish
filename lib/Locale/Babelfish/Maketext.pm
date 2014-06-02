@@ -1,7 +1,5 @@
 package Locale::Babelfish::Maketext;
 
-=encoding utf-8
-
 =head1 NAME
 
 Locale::Babelfish::Maketext;
@@ -129,8 +127,10 @@ L<Locale::Maketext>, Lhttps://github.com/nodeca/babelfish
 
 =head1 AUTHORS
 
-Mironov Igor E<lt>mironov.igor@gmail.com<gt>
+Mironov Igor E<lt>grif@cpan.org<gt>
+
 Crazy Panda LLC
+
 REG.RU LLC
 
 =head1 COPYRIGHT

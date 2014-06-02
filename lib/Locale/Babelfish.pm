@@ -5,12 +5,18 @@ $Locale::Babelfish::VERSION = '0.01';
 
 =head1 NAME
 
-Locale::Babelfish - wrapper between Locale::Maketext and https://github.com/nodeca/babelfish format
+Locale::Babelfish - wrapper between Locale::Maketext::Lexicon and https://github.com/nodeca/babelfish format
 
 
 =head1 VERSION
 
 This document describes version 0.01 of Locale::Babelfish
+
+=head1 DESCRIPTION
+
+Internationalisation with easy syntax.
+Simple wrapper between Locale::Maketext and https://github.com/nodeca/babelfish format.
+Created for using same dictionaries on backend and frontend.
 
 
 =head1 SYNOPSIS
@@ -30,7 +36,7 @@ More sophisticated example:
     ...
     my $bf = Locale::Babelfish->new( {
             dirs         => [ '/path/to/dictionaries'],
-            default_lang => ['ru_RU'],
+            default_lang => ['ru_RU'], # By default en_US
             langs        => [{ 'uk_UA' => 'Foo::Bar::Lang::uk_UA' } , 'de_DE' ] # for custom languages specify they are plural forms
         },
         $logger # Logger for example Log::Log4Perl, not required parameter
@@ -39,11 +45,6 @@ More sophisticated example:
     $bf->set_context_lang('en_US');
     warn $bf->t('dictionary.firstkey.nextkey', { foo => 'bar'} );
 
-=head1 DESCRIPTION
-
-Internationalisation with easy syntax.
-Simple wrapper between Locale::Maketext and https://github.com/nodeca/babelfish format.
-Created for using same dictionaries on backend and frontend.
 
 =head1 Phrases Syntax
 
@@ -59,6 +60,7 @@ or short form
 I have #{count} ((nail|nails))
 
 =head1 dictionary file example
+
 Module support only yaml format.
 create dictionary file like: dictionary.en_US.yaml where dictionary - is name of dictionary and en_US - his locale
 
@@ -85,9 +87,11 @@ use strict;
 
 sub quant_word {
     my ($self, $num, $single, $plural1, $plural2) = @_;
+
     my $num_s   = $num % 10;
     my $num_dec = $num % 100;
     my $ret;
+
     if    ($num_dec >= 10 and $num_dec <= 20) { $ret = $plural2 || $plural1 || $single }
     elsif ($num_s == 1)                       { $ret = $single }
     elsif ($num_s >= 2 and $num_s <= 4)       { $ret = $plural1 || $single }
@@ -98,9 +102,14 @@ sub quant_word {
 1;
 ......
 
-=head2 Dictionary encoding
+=head1 Dictionary encoding
 
     Use any convinient encoding.
+
+=cut
+
+=head1 Methods
+
 
 =cut
 
@@ -462,12 +471,14 @@ sub _parse_dictname_key {
 
 =head1 SEE ALSO
 
-L<Locale::Maketext>, Lhttps://github.com/nodeca/babelfish
+L<Locale::Maketext::Lexicon>, https://github.com/nodeca/babelfish
 
 =head1 AUTHORS
 
-Mironov Igor E<lt>mironov.igor@gmail.com<gt>
-Crazy Panda LLC
+Mironov Igor E<lt>grif@cpan.org<gt>,
+
+Crazy Panda LLC,
+
 REG.RU LLC
 
 =head1 COPYRIGHT
