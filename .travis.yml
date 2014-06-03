@@ -2,7 +2,7 @@ language: perl
 
 notifications:
     recipients:
-        # - mironov.igor@reg.ru
+        - mironov.igor@reg.ru
         - a.gerasimov@reg.ru
 
 perl:
@@ -30,6 +30,8 @@ script:
     - "dzil smoke --release --author"
 
 branches:
-    except:
-        - /build\/master/
-        - releases
+    only:
+        - master
+    # except:
+    #     - /build\/master/
+    #     - releases
