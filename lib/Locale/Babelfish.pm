@@ -120,8 +120,9 @@ __PACKAGE__->mk_group_accessors( simple => qw/ context_lang / );
 
 =method new
 
-Constructor.
-Locale::Babelfish->new( {
+Constructor
+
+my $bf = Locale::Babelfish->new( {
                             dirs => [ '/path/to/dictionaries' ], # is required
                             suffix => 'yaml', # dictionaries extension
                             default_lang => 'ru_RU', # by default en_US
@@ -277,6 +278,7 @@ sub has_any_value {
 
 
 =method maketext
+
     same as t, but parameters for substitute are sequential
     $self->maketext( 'dict', 'key.subkey ' , $param1, ... $paramN );
     Where C<dict> - is dictionary, C<key.subkey> - key at dictionary.
