@@ -1,7 +1,15 @@
 package Locale::Babelfish::Lang::ru_RU;
 
+# ABSTRACT: en_US language
+
 use parent 'Locale::Babelfish::Maketext';
 use strict;
+
+# VERSION
+
+=for Pod::Coverage quant_word
+
+=cut
 
 sub quant_word {
     my ($self, $num, $single, $plural1, $plural2) = @_;

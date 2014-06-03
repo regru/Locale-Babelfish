@@ -1,23 +1,12 @@
 package Locale::Babelfish;
 
-$Locale::Babelfish::VERSION = '0.01';
-
-
-=head1 NAME
-
-Locale::Babelfish - wrapper between Locale::Maketext::Lexicon and https://github.com/nodeca/babelfish format
-
-
-=head1 VERSION
-
-This document describes version 0.01 of Locale::Babelfish
+# ABSTRACT: wrapper between Locale::Maketext::Lexicon and github://nodeca/babelfish format
 
 =head1 DESCRIPTION
 
 Internationalisation with easy syntax.
 Simple wrapper between Locale::Maketext and https://github.com/nodeca/babelfish format.
 Created for using same dictionaries on backend and frontend.
-
 
 =head1 SYNOPSIS
 
@@ -40,7 +29,7 @@ More sophisticated example:
             langs        => [{ 'uk_UA' => 'Foo::Bar::Lang::uk_UA' } , 'de_DE' ] # for custom languages specify they are plural forms
         },
         $logger # Logger for example Log::Log4Perl, not required parameter
-        );
+    );
     warn $bf->t('dictionary.firstkey.nextkey', { foo => 'bar'} );
     $bf->set_context_lang('en_US');
     warn $bf->t('dictionary.firstkey.nextkey', { foo => 'bar'} );
@@ -108,12 +97,6 @@ sub quant_word {
 
 =cut
 
-=head1 Methods
-
-
-=cut
-
-
 use utf8;
 use Modern::Perl;
 
@@ -123,12 +106,18 @@ use Locale::Babelfish::Maketext;
 use YAML::Tiny;
 use Carp qw/ confess /;
 
+# VERSION
+
 our $EMPTY_VALUE = '_EMPTY_';
 
 my ( $default_lang, $log, $lex, $dirs, $langs, $dictionaries, $default_dict, $suffix, %lhs, $lexicon_vars );
 my $avaible_langs = [qw /en_US ru_RU/ ];
 
 __PACKAGE__->mk_group_accessors( simple => qw/ context_lang / );
+
+=for Pod::Coverage new
+
+=cut
 
 sub new {
     my ($class, $cfg, $logger) = @_;
@@ -164,7 +153,7 @@ sub new {
     return $self;
 }
 
-=head2 set_context_lang
+=method set_context_lang
 
     $self->set_context_lang( 'ru_RU' );
 
@@ -177,7 +166,7 @@ sub set_context_lang {
     $self->{context_lang} = ($lang and exists $langs->{$lang}) ? $lang : $default_lang;
 }
 
-=head2 check_dictionaries
+=method check_dictionaries
 
     $self->check_dictionaries();
 
@@ -203,7 +192,7 @@ sub check_dictionaries {
 
 }
 
-=head2 t
+=method t
 
     Get internationalized value for key from dictionary.
 
@@ -280,6 +269,10 @@ sub has_any_value {
 
 sub maketext  {shift->_localize_maketext(shift, undef, @_)}
 
+=for Pod::Coverage _babelfish_converter
+
+=cut
+
 sub _babelfish_converter {
     my ( $self , $data_yaml ) = @_;
 
@@ -336,6 +329,10 @@ sub _babelfish_converter {
 
 }
 
+=for Pod::Coverage _localize_maketext
+
+=cut
+
 sub _localize_maketext  {
     my ($self, $dictname, $lang) = (shift, shift, shift);
     $dictname ||= $default_dict;
@@ -359,6 +356,10 @@ sub _localize_maketext  {
     return $val || "[Babelfish:$_[0]]";
 }
 
+=for Pod::Coverage _flat_hash_keys
+
+=cut
+
 sub _flat_hash_keys {
     my $self  = shift;
     my $hash  = shift;
@@ -379,6 +380,9 @@ sub _flat_hash_keys {
     return $store;
 }
 
+=for Pod::Coverage _get_files
+
+=cut
 
 sub _get_files {
     my $self = shift;
@@ -407,7 +411,9 @@ sub _get_files {
     return \%files;
 }
 
+=for Pod::Coverage _load_file
 
+=cut
 
 sub _load_file {
     my ( $self, $dictname, $lang, $file, $forced_read ) = @_;
@@ -452,6 +458,10 @@ sub _load_file {
 
 }
 
+=for Pod::Coverage _file
+
+=cut
+
 sub _file {
     foreach my $dir (@$dirs) {
         my $fname = "$dir/$_[0].$_[1].$suffix";
@@ -459,6 +469,10 @@ sub _file {
     }
     return;
 }
+
+=for Pod::Coverage _parse_dictname_key
+
+=cut
 
 sub _parse_dictname_key {
     my ($self, $dictname_key) = @_;
@@ -468,44 +482,11 @@ sub _parse_dictname_key {
     return ( $dictname, $key );
 }
 
-
 =head1 SEE ALSO
 
-L<Locale::Maketext::Lexicon>, https://github.com/nodeca/babelfish
+L<Locale::Maketext::Lexicon>
 
-=head1 AUTHORS
-
-Mironov Igor E<lt>grif@cpan.org<gt>,
-
-Crazy Panda LLC,
-
-REG.RU LLC
-
-=head1 COPYRIGHT
-
-This software is released under the MIT license cited below.  Additionally,
-when this software is distributed with B<Perl Kit, Version 5>, you may also
-redistribute it and/or modify it under the same terms as Perl itself.
-
-=head2 The "MIT" License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+L<https://github.com/nodeca/babelfish>
 
 =cut
 
