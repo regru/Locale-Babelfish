@@ -51,11 +51,11 @@ frontend.
 
 Constructor
 
-my $bf = Locale::Babelfish->new( {
-                            dirs => \[ '/path/to/dictionaries' \], # is required
+    my $bf = Locale::Babelfish->new( {
+                            dirs => [ '/path/to/dictionaries' ], # is required
                             suffix => 'yaml', # dictionaries extension
-                            default\_lang => 'ru\_RU', # by default en\_US
-                            langs => \[ 'de\_DE', 'fr\_FR', 'uk\_UA' => 'Foo::Bar::Lang::uk\_UA' \]
+                            default_lang => 'ru_RU', # by default en_US
+                            langs => [ 'de_DE', 'fr_FR', 'uk_UA' => 'Foo::Bar::Lang::uk_UA' ]
                         }, $logger  );
 
 ## set\_context\_lang

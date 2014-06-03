@@ -122,7 +122,7 @@ __PACKAGE__->mk_group_accessors( simple => qw/ context_lang / );
 
 Constructor
 
-my $bf = Locale::Babelfish->new( {
+    my $bf = Locale::Babelfish->new( {
                             dirs => [ '/path/to/dictionaries' ], # is required
                             suffix => 'yaml', # dictionaries extension
                             default_lang => 'ru_RU', # by default en_US
