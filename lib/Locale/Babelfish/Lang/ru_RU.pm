@@ -1,6 +1,6 @@
 package Locale::Babelfish::Lang::ru_RU;
 
-# ABSTRACT: en_US language
+# ABSTRACT: ru_RU language
 
 use parent 'Locale::Babelfish::Maketext';
 use strict;
