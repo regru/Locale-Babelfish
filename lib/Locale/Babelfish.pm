@@ -19,9 +19,7 @@ frontend.
 More sophisticated example:
 
     package Foo::Bar;
-
     use Locale::Babelfish;
-    ...
     my $bf = Locale::Babelfish->new(
         # configuration
         {
@@ -98,7 +96,7 @@ this and implement B<quant_word> function.
 
 =head2 Encoding
 
-Use any convinient encoding.
+Use any convinient encoding. But better use utf8 with BOM.
 
 =cut
 
@@ -120,7 +118,15 @@ my $avaible_langs = [qw /en_US ru_RU/ ];
 
 __PACKAGE__->mk_group_accessors( simple => qw/ context_lang / );
 
-=for Pod::Coverage new
+=method new
+
+Constructor.
+Locale::Babelfish->new( {
+                            dirs => [ '/path/to/dictionaries' ], # is required
+                            suffix => 'yaml', # dictionaries extension
+                            default_lang => 'ru_RU', # by default en_US
+                            langs => [ 'de_DE', 'fr_FR', 'uk_UA' => 'Foo::Bar::Lang::uk_UA' ]
+                        }, $logger  );
 
 =cut
 
@@ -132,6 +138,8 @@ sub new {
     my $c_dicts   = $cfg->{dictionaries};
     my $c_langs   = $cfg->{langs};
     my $c_dirs    = $cfg->{dirs};
+
+    confess 'dirs are missed' unless $c_dirs;
 
     $dictionaries = { map {$_ => 1} @{$c_dicts} };
     $default_dict = $c_dicts->[0];
@@ -173,7 +181,7 @@ sub set_context_lang {
 
 =method check_dictionaries
 
-Check what changed at dictionaries.
+Check what changed at dictionaries. And renew dictionary content without restart.
 
     $self->check_dictionaries();
 
@@ -269,8 +277,9 @@ sub has_any_value {
 
 
 =method maketext
-
-    $self->maketext( 'dict', 'key' , $param1, ... $paramN );
+    same as t, but parameters for substitute are sequential
+    $self->maketext( 'dict', 'key.subkey ' , $param1, ... $paramN );
+    Where C<dict> - is dictionary, C<key.subkey> - key at dictionary.
 
 =cut
 
