@@ -4,7 +4,7 @@ Locale::Babelfish - wrapper between Locale::Maketext::Lexicon and github://nodec
 
 # VERSION
 
-version 0.02
+version 0.03
 
 # SYNOPSIS
 
@@ -17,9 +17,7 @@ version 0.02
 More sophisticated example:
 
     package Foo::Bar;
-
     use Locale::Babelfish;
-    ...
     my $bf = Locale::Babelfish->new(
         # configuration
         {
@@ -49,6 +47,17 @@ frontend.
 
 # METHODS
 
+## new
+
+Constructor
+
+my $bf = Locale::Babelfish->new( {
+                            dirs => \[ '/path/to/dictionaries' \], # is required
+                            suffix => 'yaml', # dictionaries extension
+                            default\_lang => 'ru\_RU', # by default en\_US
+                            langs => \[ 'de\_DE', 'fr\_FR', 'uk\_UA' => 'Foo::Bar::Lang::uk\_UA' \]
+                        }, $logger  );
+
 ## set\_context\_lang
 
 Setting current context.
@@ -57,7 +66,7 @@ Setting current context.
 
 ## check\_dictionaries
 
-Check what changed at dictionaries.
+Check what changed at dictionaries. And renew dictionary content without restart.
 
     $self->check_dictionaries();
 
@@ -79,7 +88,9 @@ Where `main` - is dictionary, `key.subkey` - key at dictionary.
 
 ## maketext
 
-    $self->maketext( 'dict', 'key' , $param1, ... $paramN );
+    same as t, but parameters for substitute are sequential
+    $self->maketext( 'dict', 'key.subkey ' , $param1, ... $paramN );
+    Where C<dict> - is dictionary, C<key.subkey> - key at dictionary.
 
 # DICTIONARIES
 
@@ -136,7 +147,7 @@ this and implement **quant\_word** function.
 
 ## Encoding
 
-Use any convinient encoding.
+Use any convinient encoding. But better use utf8 with BOM.
 
 # SEE ALSO
 
