@@ -1,25 +1,19 @@
 package Locale::Babelfish::Maketext;
 
-=head1 NAME
-
-Locale::Babelfish::Maketext;
-
-=head1 DESCRIPTION
-
-Wrapper Locale::Maketext
-
-=cut
+# ABSTRACT: Wrapper around Locale::Maketext
 
 use utf8;
 use Modern::Perl;
 use Carp;
 use parent 'Locale::Maketext';
 
-=head2 create_lh
+# VERSION
+
+=method create_lh
+
+Handler for dictionary at Locale::Maketext
 
     $class->create_lh( $dictname, $lang, $lex );
-
-    Handler for dictionary at  Locale::Maketext
 
 =cut
 
@@ -62,7 +56,7 @@ sub create_lh {
     return $lh;
 }
 
-=head2 set_lexicon
+=method set_lexicon
 
     $self->set_lexicon( $lex );
 
@@ -74,7 +68,7 @@ sub set_lexicon {
     %{ref($self)."::Lexicon"} = %$lex if ref $lex eq 'HASH';
 }
 
-=head2 lexicon
+=method lexicon
 
     $self->lexicon();
 
@@ -96,68 +90,53 @@ sub lexicon {
 
 sub l10n { shift->maketext(@_) }
 
+=for Pod::Coverage quant
+
+=cut
+
 sub quant {
     my $self = shift;
     return $_[0] . ' ' . $self->quant_word(@_);
 }
+
+=for Pod::Coverage numb
+
+=cut
 
 sub numb {
     my $self = shift;
     return  $self->quant_word(@_);
 }
 
+=for Pod::Coverage quant_word
+
+=cut
 
 sub quant_word { die "Must be implemented" }
 
+=for Pod::Coverage quant_word_std_single
+
+=cut
 
 sub quant_word_std_single {
     my ($self, $num, $single) = @_;
     return $single;
 }
 
+=for Pod::Coverage quant_word_std_double
+
+=cut
+
 sub quant_word_std_double {
     my ($self, $num, $single, $plural) = @_;
     return $num == 1 ? $single : ($plural || $single);
 }
 
-
 =head1 SEE ALSO
 
-L<Locale::Maketext>, Lhttps://github.com/nodeca/babelfish
+L<Locale::Maketext>
 
-=head1 AUTHORS
-
-Mironov Igor E<lt>grif@cpan.org<gt>
-
-Crazy Panda LLC
-
-REG.RU LLC
-
-=head1 COPYRIGHT
-
-This software is released under the MIT license cited below.  Additionally,
-when this software is distributed with B<Perl Kit, Version 5>, you may also
-redistribute it and/or modify it under the same terms as Perl itself.
-
-=head2 The "MIT" License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+L<https://github.com/nodeca/babelfish>
 
 =cut
 

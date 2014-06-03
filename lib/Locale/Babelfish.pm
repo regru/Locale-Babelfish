@@ -1,32 +1,20 @@
 package Locale::Babelfish;
 
-$Locale::Babelfish::VERSION = '0.01';
-
-
-=head1 NAME
-
-Locale::Babelfish - wrapper between Locale::Maketext::Lexicon and https://github.com/nodeca/babelfish format
-
-
-=head1 VERSION
-
-This document describes version 0.01 of Locale::Babelfish
+# ABSTRACT: wrapper between Locale::Maketext::Lexicon and github://nodeca/babelfish format
 
 =head1 DESCRIPTION
 
-Internationalisation with easy syntax.
-Simple wrapper between Locale::Maketext and https://github.com/nodeca/babelfish format.
-Created for using same dictionaries on backend and frontend.
-
+Internationalisation with easy syntax. Simple wrapper between L<Locale::Maketext> and
+L<https://github.com/nodeca/babelfish> format. Created for using same dictionaries on backend and
+frontend.
 
 =head1 SYNOPSIS
 
     package Foo;
     use Locale::Babelfish;
 
-    my $bf = Locale::Babelfish->new( { dirs => [ '/path/to/dictionaries'] } );
-    warn $bf->t('dictionary.firstkey.nextkey', { foo => 'bar'} );
-
+    my $bf = Locale::Babelfish->new( { dirs => [ '/path/to/dictionaries' ] } );
+    print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
 
 More sophisticated example:
 
@@ -34,85 +22,85 @@ More sophisticated example:
 
     use Locale::Babelfish;
     ...
-    my $bf = Locale::Babelfish->new( {
-            dirs         => [ '/path/to/dictionaries'],
-            default_lang => ['ru_RU'], # By default en_US
-            langs        => [{ 'uk_UA' => 'Foo::Bar::Lang::uk_UA' } , 'de_DE' ] # for custom languages specify they are plural forms
+    my $bf = Locale::Babelfish->new(
+        # configuration
+        {
+            dirs         => [ '/path/to/dictionaries' ],
+            default_lang => [ 'ru_RU' ], # By default en_US
+            langs        => [
+                { 'uk_UA' => 'Foo::Bar::Lang::uk_UA' },
+                'de_DE',
+            ], # for custom languages specify they are plural forms
         },
-        $logger # Logger for example Log::Log4Perl, not required parameter
-        );
-    warn $bf->t('dictionary.firstkey.nextkey', { foo => 'bar'} );
+        # logger, for example Log::Log4Perl (not required parameter)
+        $logger
+    );
+
+    # use default language
+    print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
+
+    # switch language
     $bf->set_context_lang('en_US');
-    warn $bf->t('dictionary.firstkey.nextkey', { foo => 'bar'} );
+    print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
 
+=head1 DICTIONARIES
 
-=head1 Phrases Syntax
+=head2 Phrases Syntax
 
 #{varname} Echoes value of variable
 ((Singular|Plural1|Plural2)):count Plural form
 
 Example:
 
-I have #{count} ((nail|nails)):count
+    I have #{count} ((nail|nails)):count
 
 or short form
 
-I have #{count} ((nail|nails))
+    I have #{count} ((nail|nails))
 
-=head1 dictionary file example
+=head2 Dictionary file example
 
-Module support only yaml format.
-create dictionary file like: dictionary.en_US.yaml where dictionary - is name of dictionary and en_US - his locale
+Module support only YAML format. Create dictionary file like: B<dictionary.en_US.yaml> where
+C<dictionary> is name of dictionary and C<en_US> - its locale.
 
-profile: Profiel
-  apps:
-    forums:
-      new_topic: New topic
-      last_post:
-            title : Last message
-demo:
-    apples: I have #{count} ((apple|apples))
+    profile: Profiel
+        apps:
+            forums:
+                new_topic: New topic
+                last_post:
+                    title : Last message
+    demo:
+        apples: I have #{count} ((apple|apples))
 
-=head1 Custom plural forms
+=head2 Custom plural forms
 
-By default locale will be inherited from en_US.
-If you would like specify own, create module like this:
-and implement quant_word function.
+By default locale will be inherited from C<en_US>. If you would like specify own, create module like
+this and implement B<quant_word> function.
 
-.....
-package Locale::Babelfish::Lang::uk_UA;
+    package Locale::Babelfish::Lang::uk_UA;
 
-use parent 'Locale::Babelfish::Maketext';
-use strict;
+    use strict;
+    use parent 'Locale::Babelfish::Maketext';
 
-sub quant_word {
-    my ($self, $num, $single, $plural1, $plural2) = @_;
+    sub quant_word {
+        my ($self, $num, $single, $plural1, $plural2) = @_;
 
-    my $num_s   = $num % 10;
-    my $num_dec = $num % 100;
-    my $ret;
+        my $num_s   = $num % 10;
+        my $num_dec = $num % 100;
+        my $ret;
 
-    if    ($num_dec >= 10 and $num_dec <= 20) { $ret = $plural2 || $plural1 || $single }
-    elsif ($num_s == 1)                       { $ret = $single }
-    elsif ($num_s >= 2 and $num_s <= 4)       { $ret = $plural1 || $single }
-    else                                      { $ret = $plural2 || $plural1 || $single }
-    return $ret;
-}
+        if    ($num_dec >= 10 and $num_dec <= 20) { $ret = $plural2 || $plural1 || $single }
+        elsif ($num_s == 1)                       { $ret = $single }
+        elsif ($num_s >= 2 and $num_s <= 4)       { $ret = $plural1 || $single }
+        else                                      { $ret = $plural2 || $plural1 || $single }
+        return $ret;
+    }
 
-1;
-......
+=head2 Encoding
 
-=head1 Dictionary encoding
-
-    Use any convinient encoding.
+Use any convinient encoding.
 
 =cut
-
-=head1 Methods
-
-
-=cut
-
 
 use utf8;
 use Modern::Perl;
@@ -123,12 +111,18 @@ use Locale::Babelfish::Maketext;
 use YAML::Tiny;
 use Carp qw/ confess /;
 
+# VERSION
+
 our $EMPTY_VALUE = '_EMPTY_';
 
 my ( $default_lang, $log, $lex, $dirs, $langs, $dictionaries, $default_dict, $suffix, %lhs, $lexicon_vars );
 my $avaible_langs = [qw /en_US ru_RU/ ];
 
 __PACKAGE__->mk_group_accessors( simple => qw/ context_lang / );
+
+=for Pod::Coverage new
+
+=cut
 
 sub new {
     my ($class, $cfg, $logger) = @_;
@@ -164,11 +158,11 @@ sub new {
     return $self;
 }
 
-=head2 set_context_lang
+=method set_context_lang
+
+Setting current context.
 
     $self->set_context_lang( 'ru_RU' );
-
-    Setting current context.
 
 =cut
 
@@ -177,11 +171,11 @@ sub set_context_lang {
     $self->{context_lang} = ($lang and exists $langs->{$lang}) ? $lang : $default_lang;
 }
 
-=head2 check_dictionaries
+=method check_dictionaries
+
+Check what changed at dictionaries.
 
     $self->check_dictionaries();
-
-    check what changed at dictionaries
 
 =cut
 
@@ -203,12 +197,13 @@ sub check_dictionaries {
 
 }
 
-=head2 t
+=method t
 
-    Get internationalized value for key from dictionary.
+Get internationalized value for key from dictionary.
 
-    $self->t( 'main.key.subkey' , { paaram1 => 1 , param2 => { next_level  => 'test' } } );
-    Where main - is dictionary, key.subkey - key at dictionary
+    $self->t( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
+
+Where C<main> - is dictionary, C<key.subkey> - key at dictionary.
 
 =cut
 
@@ -235,12 +230,13 @@ sub t {
     return $self->_localize_maketext($dictname, undef, $key, @params);
 }
 
-=head2 has_any_value
+=method has_any_value
+
+Check exist or not key in dictionary.
 
     $self->has_any_value( 'main.key.subkey' );
 
-    Check exist or not key in dictionary.
-    Where main - is dictionary, key.subkey - key at dictionary
+Where C<main> - is dictionary, C<key.subkey> - key at dictionary.
 
 =cut
 
@@ -272,13 +268,17 @@ sub has_any_value {
 }
 
 
-=head2 maketext
+=method maketext
 
     $self->maketext( 'dict', 'key' , $param1, ... $paramN );
 
 =cut
 
 sub maketext  {shift->_localize_maketext(shift, undef, @_)}
+
+=for Pod::Coverage _babelfish_converter
+
+=cut
 
 sub _babelfish_converter {
     my ( $self , $data_yaml ) = @_;
@@ -336,6 +336,10 @@ sub _babelfish_converter {
 
 }
 
+=for Pod::Coverage _localize_maketext
+
+=cut
+
 sub _localize_maketext  {
     my ($self, $dictname, $lang) = (shift, shift, shift);
     $dictname ||= $default_dict;
@@ -359,6 +363,10 @@ sub _localize_maketext  {
     return $val || "[Babelfish:$_[0]]";
 }
 
+=for Pod::Coverage _flat_hash_keys
+
+=cut
+
 sub _flat_hash_keys {
     my $self  = shift;
     my $hash  = shift;
@@ -379,6 +387,9 @@ sub _flat_hash_keys {
     return $store;
 }
 
+=for Pod::Coverage _get_files
+
+=cut
 
 sub _get_files {
     my $self = shift;
@@ -407,7 +418,9 @@ sub _get_files {
     return \%files;
 }
 
+=for Pod::Coverage _load_file
 
+=cut
 
 sub _load_file {
     my ( $self, $dictname, $lang, $file, $forced_read ) = @_;
@@ -452,6 +465,10 @@ sub _load_file {
 
 }
 
+=for Pod::Coverage _file
+
+=cut
+
 sub _file {
     foreach my $dir (@$dirs) {
         my $fname = "$dir/$_[0].$_[1].$suffix";
@@ -459,6 +476,10 @@ sub _file {
     }
     return;
 }
+
+=for Pod::Coverage _parse_dictname_key
+
+=cut
 
 sub _parse_dictname_key {
     my ($self, $dictname_key) = @_;
@@ -468,44 +489,11 @@ sub _parse_dictname_key {
     return ( $dictname, $key );
 }
 
-
 =head1 SEE ALSO
 
-L<Locale::Maketext::Lexicon>, https://github.com/nodeca/babelfish
+L<Locale::Maketext::Lexicon>
 
-=head1 AUTHORS
-
-Mironov Igor E<lt>grif@cpan.org<gt>,
-
-Crazy Panda LLC,
-
-REG.RU LLC
-
-=head1 COPYRIGHT
-
-This software is released under the MIT license cited below.  Additionally,
-when this software is distributed with B<Perl Kit, Version 5>, you may also
-redistribute it and/or modify it under the same terms as Perl itself.
-
-=head2 The "MIT" License
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+L<https://github.com/nodeca/babelfish>
 
 =cut
 
