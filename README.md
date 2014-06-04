@@ -88,9 +88,11 @@ Where `main` - is dictionary, `key.subkey` - key at dictionary.
 
 ## maketext
 
-    same as t, but parameters for substitute are sequential
+same as t, but parameters for substitute are sequential
+
     $self->maketext( 'dict', 'key.subkey ' , $param1, ... $paramN );
-    Where C<dict> - is dictionary, C<key.subkey> - key at dictionary.
+
+Where `dict` - is dictionary, `key.subkey` - key at dictionary.
 
 # DICTIONARIES
 
