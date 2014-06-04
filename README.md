@@ -4,7 +4,7 @@ Locale::Babelfish - wrapper between Locale::Maketext::Lexicon and github://nodec
 
 # VERSION
 
-version 0.03
+version 0.05
 
 # SYNOPSIS
 

@@ -129,6 +129,7 @@ sub quant_word_std_single {
 
 sub quant_word_std_double {
     my ($self, $num, $single, $plural) = @_;
+    $num ||= 0;
     return $num == 1 ? $single : ($plural || $single);
 }
 

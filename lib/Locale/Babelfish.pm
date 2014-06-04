@@ -116,7 +116,7 @@ our $EMPTY_VALUE = '_EMPTY_';
 my ( $default_lang, $log, $lex, $dirs, $langs, $dictionaries, $default_dict, $suffix, %lhs, $lexicon_vars );
 my $avaible_langs = [qw /en_US ru_RU/ ];
 
-__PACKAGE__->mk_group_accessors( simple => qw/ context_lang / );
+__PACKAGE__->mk_group_accessors( simple => qw/ context_lang default_lang / );
 
 =method new
 
@@ -160,6 +160,7 @@ sub new {
 
     my $self = bless {
         context_lang => $default_lang,
+        default_lang => $default_lang,
     }, $class;
 
     $self->check_dictionaries;
