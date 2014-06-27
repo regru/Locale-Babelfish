@@ -1,6 +1,6 @@
 use strict;
 use Test::Deep;
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 use FindBin qw($Bin);
 
@@ -64,7 +64,9 @@ cmp_ok( $l10n->has_any_value('test.plural.case1123' ) ,
         '==', 0 , 'has_any_value'
  );
 
-$l10n->set_context_lang('ru_RU');
+$l10n->set_locale('ru_RU');
+
+cmp_ok( $l10n->current_locale , 'eq', 'ru_RU', 'Check current locale');
 
 cmp_ok( $l10n->t('test.simple.plural.nails4', { test => 1, test2 => 20 } ) ,
         'eq', 'Берём 1 гвоздь для 20 досок и вбиваем 1 гвоздь в 20 досок' , 'repeat_twice'

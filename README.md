@@ -36,8 +36,11 @@ More sophisticated example:
     print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
 
     # switch language
-    $bf->set_context_lang('en_US');
+    $bf->set_locale('en_US');
     print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
+
+    # Get current locale
+    print $bf->current_locale;
 
 # DESCRIPTION
 
@@ -58,9 +61,15 @@ Constructor
                             langs => [ 'de_DE', 'fr_FR', 'uk_UA' => 'Foo::Bar::Lang::uk_UA' ]
                         }, $logger  );
 
+## set\_locale
+
+Setting current locale.
+
+    $self->set_locale( 'ru_RU' );
+
 ## set\_context\_lang
 
-Setting current context.
+depricated, please use set\_locale
 
     $self->set_context_lang( 'ru_RU' );
 

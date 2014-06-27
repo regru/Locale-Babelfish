@@ -38,8 +38,11 @@ More sophisticated example:
     print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
 
     # switch language
-    $bf->set_context_lang('en_US');
+    $bf->set_locale('en_US');
     print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
+
+    # Get current locale
+    print $bf->current_locale;
 
 =head1 DICTIONARIES
 
@@ -116,7 +119,7 @@ our $EMPTY_VALUE = '_EMPTY_';
 my ( $default_lang, $log, $lex, $dirs, $langs, $dictionaries, $default_dict, $suffix, %lhs, $lexicon_vars );
 my $avaible_langs = [qw /en_US ru_RU/ ];
 
-__PACKAGE__->mk_group_accessors( simple => qw/ context_lang default_lang / );
+__PACKAGE__->mk_group_accessors( simple => qw/ current_locale default_lang / );
 
 =method new
 
@@ -159,7 +162,7 @@ sub new {
     $suffix       = $cfg->{suffix} || 'yaml';
 
     my $self = bless {
-        context_lang => $default_lang,
+        current_locale => $default_lang,
         default_lang => $default_lang,
     }, $class;
 
@@ -168,9 +171,22 @@ sub new {
     return $self;
 }
 
+=method set_locale
+
+Setting current locale.
+
+    $self->set_locale( 'ru_RU' );
+
+=cut
+
+sub set_locale {
+    my ($self, $lang) = @_;
+    $self->{current_locale} = ($lang and exists $langs->{$lang}) ? $lang : $default_lang;
+}
+
 =method set_context_lang
 
-Setting current context.
+depricated, please use set_locale
 
     $self->set_context_lang( 'ru_RU' );
 
@@ -178,7 +194,7 @@ Setting current context.
 
 sub set_context_lang {
     my ($self, $lang) = @_;
-    $self->{context_lang} = ($lang and exists $langs->{$lang}) ? $lang : $default_lang;
+    $self->{current_locale} = ($lang and exists $langs->{$lang}) ? $lang : $default_lang;
 }
 
 =method check_dictionaries
@@ -224,7 +240,7 @@ sub t {
     Carp::confess "wrong dictionary $dictname"  unless exists $dictionaries->{$dictname};
     Carp::confess "key missed"        unless $key;
 
-    my $lang = $self->{context_lang};
+    my $lang = $self->{current_locale};
     $lang = exists $langs->{$lang} ? $lang : $default_lang;
 
     my $flat_params = $self->_flat_hash_keys($params);
@@ -260,7 +276,7 @@ sub has_any_value {
 
 
     $dictname ||= $default_dict;
-    my $lang = $self->{context_lang};
+    my $lang = $self->{current_locale};
     $lang = exists $langs->{$lang} ? $lang : $default_lang;
 
     my $val;
@@ -357,7 +373,7 @@ sub _babelfish_converter {
 sub _localize_maketext  {
     my ($self, $dictname, $lang) = (shift, shift, shift);
     $dictname ||= $default_dict;
-    $lang ||= $self->{context_lang};
+    $lang ||= $self->{current_locale};
     $lang = exists $langs->{$lang} ? $lang : $default_lang;
 
     my $val;
