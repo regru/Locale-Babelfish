@@ -234,11 +234,18 @@ Where C<main> - is dictionary, C<key.subkey> - key at dictionary.
 =cut
 
 sub t {
-    my ($self, $dictname_key , $params ) = ( shift, shift, shift );
+    my ($self, $dictname_key, $params ) = @_;
 
     my ( $dictname, $key ) = $self->_parse_dictname_key( $dictname_key );
     Carp::confess "wrong dictionary $dictname"  unless exists $dictionaries->{$dictname};
     Carp::confess "key missed"        unless $key;
+
+    if ( defined($params) && ref($params) eq '' ) {
+        $params = {
+            count => $params,
+            value => $params,
+        };
+    }
 
     my $lang = $self->{current_locale};
     $lang = exists $langs->{$lang} ? $lang : $default_lang;
