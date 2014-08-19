@@ -1,22 +1,21 @@
 use strict;
 use Test::Deep;
-use Test::More tests => 17;
+use Test::More tests => 18;
 
 use FindBin qw($Bin);
 
 use utf8;
 
-use_ok( 'Locale::Babelfish' ) or exit;
+use_ok( 'Locale::Babelfish' ) or exit 1;
 
 my $dir = "$Bin";
 
-my $cfg;
-
-$cfg->{dirs}         = [ $dir ];
-$cfg->{dictionaries} = ['test'];
-$cfg->{default_lang} = 'en_US';
-$cfg->{langs}        = [ 'ru_RU', 'en_US' ];
-
+my $cfg = {
+        dirs         => [ $dir ],
+        dictionaries => ['test'],
+        default_lang => 'en_US',
+        langs        => [ 'ru_RU', 'en_US' ],
+};
 
 my $l10n = Locale::Babelfish->new( $cfg, undef );
 
@@ -54,6 +53,10 @@ cmp_ok( $l10n->t('test.plural.case1', { test => 1 } ) ,
 
 cmp_ok( $l10n->t('test.plural.case2', { test => 1 } ) ,
         'eq', 'I have 1 nail simple using' , 'plural3'
+ );
+
+cmp_ok( $l10n->t('test.plural.case3', 17 ) ,
+        'eq', 'I have 17 big nails' , 'plural4'
  );
 
 cmp_ok( $l10n->has_any_value('test.plural.case1' ) ,
