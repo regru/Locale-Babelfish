@@ -253,7 +253,12 @@ sub t {
         $params[$positon_in_array] = $flat_params->{$k} if $positon_in_array >= 0;
     }
 
-    return $self->_localize_maketext($dictname, undef, $key, @params);
+    my $content = $self->_localize_maketext($dictname, undef, $key, @params);
+    # Locale::Maketext квадратные скобки считает своими, возвращаем их обратно
+    $content =~ s{--left_square_br--}{\[}msg;
+    $content =~ s{--right_square_br--}{\]}msg;
+
+    return $content;
 }
 
 =method has_any_value
@@ -319,11 +324,11 @@ sub _babelfish_converter {
     foreach my $key (keys %$data_yaml) {
         my $content = $data_yaml->{$key};
 
-        my ( @single_vars ) = $content =~ m{\#\{(.+?)\}}xmsig;
+        my ( @single_vars ) = $content =~ m{\#\{(.+?)\}}msg;
 
         push @single_vars, 'count';
 
-        my ( @plural_vars ) = $content =~ m{\(\(.+?\)\)(?=\:(.+?)\b)?}xmsig;
+        my ( @plural_vars ) = $content =~ m{\(\(.+?\)\)(?=\:(.+?)\b)?}msg;
 
         my $i = 1;
 
@@ -334,36 +339,37 @@ sub _babelfish_converter {
             $i++;
         }
 
-        my ( @plurals ) = $content =~ m{(\(\(.+?\)\))(?=\:(.+?)\b)?}xmsig;
+        # Locale::Maketext квадратные скобки считает своими
+        $content =~ s{\[}{--left_square_br--}msg;
+        $content =~ s{\]}{--right_square_br--}msg;
+
+        my ( @plurals ) = $content =~ m{(\(\(.+?\)\))(?=\:(.+?)\b)?}msg;
 
         for ( $i = 0; $i < @plurals; $i +=2 ) {
             my $construction = $plurals[$i];
             next unless $construction;
             my $var = $plurals[$i+1] || 'count';
-            my ( $plural_list ) = $construction =~ m{\(\((.+?)\)\)}xmsig;
+            my ( $plural_list ) = $construction =~ m{\(\((.+?)\)\)}msg;
             my $orig_list =  $plural_list;
 
-            $orig_list =~ s {\|}{\\\|}xmsig;
-
-            $plural_list =~ s{\|}{\,}xmsig;
+            $plural_list =~ s{\|}{\,}msg;
 
             my $locale_text_string = "[numb,_" . $numered_vars->{$var} . ",$plural_list]";
-            $content =~ s{\(\($orig_list\)\)(?:\:$var\b)}{$locale_text_string}xmsig;
+            $content =~ s{\(\(\Q$orig_list\E\)\)(?:\:\Q$var\E\b)}{$locale_text_string}msg;
 
             my $short_form = "[numb,_" . $numered_vars->{count} . ",$plural_list]";
-            $content =~ s{\(\($orig_list\)\)(?!\:)}{$short_form}xmsig;
+            $content =~ s{\(\(\Q$orig_list\E\)\)(?!\:)}{$short_form}msg;
         }
 
-        foreach my $var ( keys %$numered_vars ) {
+        for my $var ( keys %$numered_vars ) {
             my $numb = $numered_vars->{$var};
-            $content =~ s{\#\{$var\}}{\[_$numb\]}xmsig;
+            $content =~ s{\#\{\Q$var\E\}}{\[_$numb\]}msg;
         }
 
         $data->{$key} = $content;
         $vars->{$key} = $numered_vars;
     }
     return ( $data , $vars );
-
 }
 
 =for Pod::Coverage _localize_maketext
