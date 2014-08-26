@@ -19,10 +19,9 @@ my $cfg = {
 
 my $l10n = Locale::Babelfish->new( $cfg, undef );
 
-my $t;
-eval { $t = $l10n->t('test1.developers.some.test', {} )};
+my $t = $l10n->t('test1.developers.some.test', {} );
 
-ok( !$t );
+is( $t, '[Babelfish:test1.developers.some.test]', 'No dictionary' );
 
 
 cmp_ok( $l10n->t('test.simple', { dummy => ' test script ' } ) ,
@@ -30,7 +29,7 @@ cmp_ok( $l10n->t('test.simple', { dummy => ' test script ' } ) ,
  );
 
 cmp_ok( $l10n->t('test.dummy_key', { who => ' test script ' } ) ,
-        'eq', '[Babelfish:dummy_key]' , 'dummy_key'
+        'eq', '[Babelfish:test.dummy_key]' , 'dummy_key'
  );
 
 cmp_ok( $l10n->t('test.simple', { who => 'test script' } ) ,
