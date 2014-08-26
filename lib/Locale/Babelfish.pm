@@ -223,22 +223,29 @@ sub check_dictionaries {
 
 }
 
-=method t
+=method t_or_undef
 
 Get internationalized value for key from dictionary.
 
-    $self->t( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
+    $self->t_or_undef( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
 
 Where C<main> - is dictionary, C<key.subkey> - key at dictionary.
 
 =cut
 
-sub t {
-    my ($self, $dictname_key , $params ) = ( shift, shift, shift );
+sub t_or_undef {
+    my ($self, $dictname_key, $params ) = @_;
 
     my ( $dictname, $key ) = $self->_parse_dictname_key( $dictname_key );
-    Carp::confess "wrong dictionary $dictname"  unless exists $dictionaries->{$dictname};
+    return undef  unless exists $dictionaries->{$dictname};
     Carp::confess "key missed"        unless $key;
+
+    if ( defined($params) && ref($params) eq '' ) {
+        $params = {
+            count => $params,
+            value => $params,
+        };
+    }
 
     my $lang = $self->{current_locale};
     $lang = exists $langs->{$lang} ? $lang : $default_lang;
@@ -253,7 +260,33 @@ sub t {
         $params[$positon_in_array] = $flat_params->{$k} if $positon_in_array >= 0;
     }
 
-    return $self->_localize_maketext($dictname, undef, $key, @params);
+    my $content = $self->_localize_maketext($dictname, undef, $key, @params);
+
+    return $content  if !defined( $content ) || length($content) == 0;
+
+    # Locale::Maketext квадратные скобки считает своими, возвращаем их обратно
+    $content =~ s{--left_square_br--}{\[}msg;
+    $content =~ s{--right_square_br--}{\]}msg;
+
+    return $content;
+}
+
+=method t
+
+Get internationalized value for key from dictionary.
+
+    $self->t( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
+
+Where C<main> - is dictionary, C<key.subkey> - key at dictionary.
+
+=cut
+
+sub t {
+    my $self = shift;
+
+    my $text = $self->t_or_undef( @_ );
+
+    return $text || "[Babelfish:$_[0]]";
 }
 
 =method has_any_value
@@ -271,7 +304,7 @@ sub has_any_value {
     my ( $self, $dictname_key ) = ( shift, shift );
 
     my ( $dictname, $key ) = $self->_parse_dictname_key( $dictname_key );
-    Carp::confess "wrong dictionary"  unless exists $dictionaries->{$dictname};
+    return 0  unless exists $dictionaries->{$dictname};
     Carp::confess "key missed"        unless $key;
 
 
@@ -319,11 +352,11 @@ sub _babelfish_converter {
     foreach my $key (keys %$data_yaml) {
         my $content = $data_yaml->{$key};
 
-        my ( @single_vars ) = $content =~ m{\#\{(.+?)\}}xmsig;
+        my ( @single_vars ) = $content =~ m{\#\{\s*(.+?)\s*\}}msg;
 
         push @single_vars, 'count';
 
-        my ( @plural_vars ) = $content =~ m{\(\(.+?\)\)(?=\:(.+?)\b)?}xmsig;
+        my ( @plural_vars ) = $content =~ m{\(\(.+?\)\)(?=\:(.+?)\b)?}msg;
 
         my $i = 1;
 
@@ -334,36 +367,37 @@ sub _babelfish_converter {
             $i++;
         }
 
-        my ( @plurals ) = $content =~ m{(\(\(.+?\)\))(?=\:(.+?)\b)?}xmsig;
+        # Locale::Maketext квадратные скобки считает своими
+        $content =~ s{\[}{--left_square_br--}msg;
+        $content =~ s{\]}{--right_square_br--}msg;
+
+        my ( @plurals ) = $content =~ m{(\(\(.+?\)\))(?=\:(.+?)\b)?}msg;
 
         for ( $i = 0; $i < @plurals; $i +=2 ) {
             my $construction = $plurals[$i];
             next unless $construction;
             my $var = $plurals[$i+1] || 'count';
-            my ( $plural_list ) = $construction =~ m{\(\((.+?)\)\)}xmsig;
+            my ( $plural_list ) = $construction =~ m{\(\((.+?)\)\)}msg;
             my $orig_list =  $plural_list;
 
-            $orig_list =~ s {\|}{\\\|}xmsig;
-
-            $plural_list =~ s{\|}{\,}xmsig;
+            $plural_list =~ s{\|}{\,}msg;
 
             my $locale_text_string = "[numb,_" . $numered_vars->{$var} . ",$plural_list]";
-            $content =~ s{\(\($orig_list\)\)(?:\:$var\b)}{$locale_text_string}xmsig;
+            $content =~ s{\(\(\Q$orig_list\E\)\)(?:\:\Q$var\E\b)}{$locale_text_string}msg;
 
             my $short_form = "[numb,_" . $numered_vars->{count} . ",$plural_list]";
-            $content =~ s{\(\($orig_list\)\)(?!\:)}{$short_form}xmsig;
+            $content =~ s{\(\(\Q$orig_list\E\)\)(?!\:)}{$short_form}msg;
         }
 
-        foreach my $var ( keys %$numered_vars ) {
+        for my $var ( keys %$numered_vars ) {
             my $numb = $numered_vars->{$var};
-            $content =~ s{\#\{$var\}}{\[_$numb\]}xmsig;
+            $content =~ s{\#\{\s*\Q$var\E\s*\}}{\[_$numb\]}msg;
         }
 
         $data->{$key} = $content;
         $vars->{$key} = $numered_vars;
     }
     return ( $data , $vars );
-
 }
 
 =for Pod::Coverage _localize_maketext
@@ -390,7 +424,7 @@ sub _localize_maketext  {
 
     $log->debug("Babelfish: maketext error: $@") if ( $log && $@ );
 
-    return $val || "[Babelfish:$_[0]]";
+    return $val;
 }
 
 =for Pod::Coverage _flat_hash_keys
@@ -463,14 +497,14 @@ sub _load_file {
     return $lex->{$dictname}{$lang} if ($last_mtime and $last_mtime == (stat $file)[9]) && !$forced_read;
     $last_mtimes->{$file} = (stat $file)[9];
 
-
     my $content;
 
     eval {
-        $content = YAML::Tiny->new->read( $file )
+        $content = YAML::Tiny->new->read( $file );
+        1;
+    } or do {
+        $log->debug("BabelFish: cannot parse file $file: $@")  if $log;
     };
-
-    $log->debug("BabelFish: cannot parse file $file: $@") if ( $log && $@ );
 
     my $data_yaml = $self->_flat_hash_keys($content->[0]) || {} ;
 
@@ -488,7 +522,6 @@ sub _load_file {
     }
 
     $lex   ||= {};
-
 
     $lexicon_vars->{$dictname}->{$lang} = $vars || {};
     return $lex->{$dictname}{$lang} = $data;
@@ -514,7 +547,7 @@ sub _file {
 sub _parse_dictname_key {
     my ($self, $dictname_key) = @_;
 
-    my ( $dictname, $key ) = $dictname_key =~ m{\A(.+?)\.(.+?)\z}xmsig;
+    my ( $dictname, $key ) = $dictname_key =~ m{\A(.+?)\.(.+?)\z}ms;
 
     return ( $dictname, $key );
 }
