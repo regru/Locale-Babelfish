@@ -237,8 +237,8 @@ sub t_or_undef {
     my ($self, $dictname_key, $params ) = @_;
 
     my ( $dictname, $key ) = $self->_parse_dictname_key( $dictname_key );
-    return undef  unless exists $dictionaries->{$dictname};
     Carp::confess "key missed"        unless $key;
+    return undef  unless exists $dictionaries->{$dictname};
 
     if ( defined($params) && ref($params) eq '' ) {
         $params = {
@@ -264,7 +264,7 @@ sub t_or_undef {
 
     return $content  if !defined( $content ) || length($content) == 0;
 
-    # Locale::Maketext квадратные скобки считает своими, возвращаем их обратно
+    # Locale::Maketext uses square brackets by itself
     $content =~ s{--left_square_br--}{\[}msg;
     $content =~ s{--right_square_br--}{\]}msg;
 
@@ -367,7 +367,7 @@ sub _babelfish_converter {
             $i++;
         }
 
-        # Locale::Maketext квадратные скобки считает своими
+        # Locale::Maketext uses square brackets by itself
         $content =~ s{\[}{--left_square_br--}msg;
         $content =~ s{\]}{--right_square_br--}msg;
 
