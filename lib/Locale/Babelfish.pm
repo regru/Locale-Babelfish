@@ -116,6 +116,9 @@ use Carp qw/ confess /;
 
 our $EMPTY_VALUE = '_EMPTY_';
 
+my $LEFT_BRACKET_AS  = '{--left_bracket--}';
+my $RIGHT_BRACKET_AS = '{--right_bracket--}';
+
 my ( $default_lang, $log, $lex, $dirs, $langs, $dictionaries, $default_dict, $suffix, %lhs, $lexicon_vars );
 my $avaible_langs = [qw /en_US ru_RU/ ];
 
@@ -237,7 +240,7 @@ sub t_or_undef {
     my ($self, $dictname_key, $params ) = @_;
 
     my ( $dictname, $key ) = $self->_parse_dictname_key( $dictname_key );
-    Carp::confess "key missed"        unless $key;
+    Carp::confess "key missed, got $dictname_key"  unless $key;
     return undef  unless exists $dictionaries->{$dictname};
 
     if ( defined($params) && ref($params) eq '' ) {
@@ -265,8 +268,8 @@ sub t_or_undef {
     return $content  if !defined( $content ) || length($content) == 0;
 
     # Locale::Maketext uses square brackets by itself
-    $content =~ s{--left_square_br--}{\[}msg;
-    $content =~ s{--right_square_br--}{\]}msg;
+    $content =~ s{\Q$LEFT_BRACKET_AS\E}{\[}msg;
+    $content =~ s{\Q$RIGHT_BRACKET_AS\E}{\]}msg;
 
     return $content;
 }
@@ -304,8 +307,8 @@ sub has_any_value {
     my ( $self, $dictname_key ) = ( shift, shift );
 
     my ( $dictname, $key ) = $self->_parse_dictname_key( $dictname_key );
+    Carp::confess "key missed, got $dictname_key"  unless $key;
     return 0  unless exists $dictionaries->{$dictname};
-    Carp::confess "key missed"        unless $key;
 
 
     $dictname ||= $default_dict;
@@ -368,8 +371,8 @@ sub _babelfish_converter {
         }
 
         # Locale::Maketext uses square brackets by itself
-        $content =~ s{\[}{--left_square_br--}msg;
-        $content =~ s{\]}{--right_square_br--}msg;
+        $content =~ s{\[}{$LEFT_BRACKET_AS}msg;
+        $content =~ s{\]}{$RIGHT_BRACKET_AS}msg;
 
         my ( @plurals ) = $content =~ m{(\(\(.+?\)\))(?=\:(.+?)\b)?}msg;
 
@@ -547,7 +550,7 @@ sub _file {
 sub _parse_dictname_key {
     my ($self, $dictname_key) = @_;
 
-    my ( $dictname, $key ) = $dictname_key =~ m{\A(.+?)\.(.+?)\z}ms;
+    my ( $dictname, $key ) = $dictname_key =~ m{\A[^\.]\.(.+)\z}ms;
 
     return ( $dictname, $key );
 }
