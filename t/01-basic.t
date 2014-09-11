@@ -19,9 +19,9 @@ my $cfg = {
 
 my $l10n = Locale::Babelfish->new( $cfg, undef );
 
-my $t = $l10n->t('test1.developers.some.test', {} );
+eval { my $t = $l10n->t('test1.developers.some.test', {} ) };
 
-is( $t, '[Babelfish:test1.developers.some.test]', 'No dictionary' );
+ok( $@, 'No dictionary' );
 
 
 cmp_ok( $l10n->t('test.simple', { dummy => ' test script ' } ) ,

@@ -550,7 +550,7 @@ sub _file {
 sub _parse_dictname_key {
     my ($self, $dictname_key) = @_;
 
-    my ( $dictname, $key ) = $dictname_key =~ m{\A[^\.]\.(.+)\z}ms;
+    my ( $dictname, $key ) = $dictname_key =~ m{\A([^\.]+)\.(.+)\z}ms;
 
     return ( $dictname, $key );
 }
