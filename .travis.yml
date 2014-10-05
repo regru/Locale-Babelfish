@@ -17,6 +17,7 @@ before_install:
     - "echo 'user REGRU' > ~/.pause"
     - "git config user.email 'regru@example.com'"
     - "git config user.name 'REG.RU LLC'"
+    - "cpanm -q -n Dist::Zilla"
     - "cpanm -q -n Test::CPAN::Meta"
     - "cpanm -q -n Test::Pod::Coverage"
     - "cpanm -q -n Test::Pod"
