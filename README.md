@@ -4,7 +4,7 @@ Locale::Babelfish - wrapper between Locale::Maketext::Lexicon and github://nodec
 
 # VERSION
 
-version 0.05
+version 0.06
 
 # SYNOPSIS
 
@@ -78,6 +78,14 @@ depricated, please use set\_locale
 Check what changed at dictionaries. And renew dictionary content without restart.
 
     $self->check_dictionaries();
+
+## t\_or\_undef
+
+Get internationalized value for key from dictionary.
+
+    $self->t_or_undef( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
+
+Where `main` - is dictionary, `key.subkey` - key at dictionary.
 
 ## t
 

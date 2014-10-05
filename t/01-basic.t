@@ -19,10 +19,9 @@ my $cfg = {
 
 my $l10n = Locale::Babelfish->new( $cfg, undef );
 
-eval { my $t = $l10n->t('test1.developers.some.test', {} ) };
-
-ok( $@, 'No dictionary' );
-
+cmp_ok( $l10n->t('test1.developers.some.test', {} ) ,
+        'eq', '[Babelfish:test1.developers.some.test]'
+ );
 
 cmp_ok( $l10n->t('test.simple', { dummy => ' test script ' } ) ,
         'eq', 'I am ' , 'dummy_parameter'
