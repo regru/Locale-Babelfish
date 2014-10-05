@@ -6,7 +6,7 @@ notifications:
         - a.gerasimov@reg.ru
 
 perl:
-    - "5.19"
+    # - "5.19"
     - "5.18"
     - "5.16"
     - "5.14"
