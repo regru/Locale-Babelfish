@@ -2,8 +2,6 @@ package Locale::Babelfish::Phrase::Compiler;
 
 # ABSTRACT: Babelfish AST Compiler
 
-#
-
 =head1 DESCRIPTION
 
 Compiles AST to string or to coderef.

@@ -9,12 +9,6 @@ use feature 'state';
 
 use Locale::Babelfish::Phrase::Parser ();
 
-=encoding utf-8
-
-=head1 NAME
-
-SRX::L10N::Phrase::PluralFormsParser
-
 =head1 DESCRIPTION
 
 Returns { script_forms => {}, regular_forms = [] }

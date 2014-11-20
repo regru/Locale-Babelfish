@@ -10,12 +10,6 @@ use List::Util qw( first );
 
 # VERSION
 
-=encoding utf-8
-
-=head1 NAME
-
-SRX::L10N::Phrase::Pluralizer
-
 =head1 DESCRIPTION
 
 Pluralization implementation.
