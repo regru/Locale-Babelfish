@@ -2,6 +2,11 @@ Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
 
+    [ FEATURES ]
+    - Selfhosted parsing and compilation of phrases
+    - Supports Babelfish 1.0 syntax and API
+    - Reworked dependencies (now depends on YAML::Syck)
+
 0.06    Fri Jun 27 13:39:59 2014 +0000
 
 0.05    Wed Jun 4 15:12:50 2014 +0000

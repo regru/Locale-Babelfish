@@ -1,6 +1,6 @@
 # NAME
 
-Locale::Babelfish - wrapper between Locale::Maketext::Lexicon and github://nodeca/babelfish format
+Locale::Babelfish - Perl I18n using github://nodeca/babelfish format.
 
 # VERSION
 
@@ -9,6 +9,7 @@ version 0.06
 # SYNOPSIS
 
     package Foo;
+
     use Locale::Babelfish;
 
     my $bf = Locale::Babelfish->new( { dirs => [ '/path/to/dictionaries' ] } );
@@ -17,36 +18,39 @@ version 0.06
 More sophisticated example:
 
     package Foo::Bar;
+
     use Locale::Babelfish;
-    my $bf = Locale::Babelfish->new(
+
+    my $bf = Locale::Babelfish->new( {
         # configuration
-        {
-            dirs         => [ '/path/to/dictionaries' ],
-            default_lang => [ 'ru_RU' ], # By default en_US
-            langs        => [
-                { 'uk_UA' => 'Foo::Bar::Lang::uk_UA' },
-                'de_DE',
-            ], # for custom languages specify they are plural forms
-        },
-        # logger, for example Log::Log4Perl (not required parameter)
-        $logger
-    );
+        dirs         => [ '/path/to/dictionaries' ],
+        default_locale => [ 'ru_RU' ], # By default en_US
+    } );
 
-    # use default language
-    print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
+    # using default locale
+    print $bf->t( 'dictionary.akey' );
+    print $bf->t( 'dictionary.firstkey.nextkey', { foo => 'bar' } );
 
-    # switch language
-    $bf->set_locale('en_US');
-    print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
+    # using specified locale
+    print $bf->t( 'dictionary.firstkey.nextkey', { foo => 'bar' }, 'by_BY' );
+
+    # using scalar as count or value variable
+    print $bf->t( 'dictionary.firstkey.nextkey', 90 );
+    # same as
+    print $bf->t( 'dictionary.firstkey.nextkey', { count => 90, value => 90 } );
+
+    # set locale
+    $bf->set_locale( 'en_US' );
+    print $bf->t( 'dictionary.firstkey.nextkey', { foo => 'bar' } );
 
     # Get current locale
     print $bf->current_locale;
 
 # DESCRIPTION
 
-Internationalisation with easy syntax. Simple wrapper between [Locale::Maketext](https://metacpan.org/pod/Locale::Maketext) and
-[https://github.com/nodeca/babelfish](https://github.com/nodeca/babelfish) format. Created for using same dictionaries on backend and
-frontend.
+Internationalisation with easy syntax
+
+Created for using same dictionaries on Perl and JavaScript.
 
 # METHODS
 
@@ -55,35 +59,58 @@ frontend.
 Constructor
 
     my $bf = Locale::Babelfish->new( {
-                            dirs => [ '/path/to/dictionaries' ], # is required
-                            suffix => 'yaml', # dictionaries extension
-                            default_lang => 'ru_RU', # by default en_US
-                            langs => [ 'de_DE', 'fr_FR', 'uk_UA' => 'Foo::Bar::Lang::uk_UA' ]
-                        }, $logger  );
+        dirs => [ '/path/to/dictionaries' ], # is required
+        suffix => 'yaml', # dictionaries extension
+        default_lang => 'ru_RU', # by default en_US
+        langs => [ 'de_DE', 'fr_FR', 'uk_UA' => 'Foo::Bar::Lang::uk_UA' ]
+    } );
 
-## set\_locale
+## locale
 
-Setting current locale.
+Gets or sets current locale.
 
-    $self->set_locale( 'ru_RU' );
+    $self->locale;
+    $self->locale( 'en_GB' );
 
-## set\_context\_lang
+- prepare\_to\_compile
 
-depricated, please use set\_locale
+        $self->prepare_to_compile()
 
-    $self->set_context_lang( 'ru_RU' );
+    Marks dictionary values as refscalars, is they need compilation.
+    Or simply compiles them.
 
-## check\_dictionaries
+- detect\_locale
 
-Check what changed at dictionaries. And renew dictionary content without restart.
+        $self->detect_locale( $locale );
 
-    $self->check_dictionaries();
+    Detects locale by specified locale/language.
+
+    Returns default locale unless detected.
+
+## load\_dictionaries
+
+Loads dictionaries recursively on specified path.
+
+    $self->load_dictionaries;
+    $self->load_dictionaries( \&filter( $file_path ) );
+
+## phrase\_need\_compilation
+
+    $self->phrase_need_compilation( $phrase, $key )
+    $class->phrase_need_compilation( $phrase, $key )
+
+Определяет, требуется ли компиляция фразы.
+
+Используется также при компиляции плюралов (вложенные выражения).
 
 ## t\_or\_undef
 
 Get internationalized value for key from dictionary.
 
+    $self->t_or_undef( 'main.key.subkey' );
     $self->t_or_undef( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
+    $self->t_or_undef( 'main.key.subkey' , { param1 => 1 }, $specific_locale );
+    $self->t_or_undef( 'main.key.subkey' , 1 );
 
 Where `main` - is dictionary, `key.subkey` - key at dictionary.
 
@@ -91,9 +118,14 @@ Where `main` - is dictionary, `key.subkey` - key at dictionary.
 
 Get internationalized value for key from dictionary.
 
+    $self->t( 'main.key.subkey' );
     $self->t( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
+    $self->t( 'main.key.subkey' , { param1 => 1 }, $specific_locale );
+    $self->t( 'main.key.subkey' , 1 );
 
 Where `main` - is dictionary, `key.subkey` - key at dictionary.
+
+Returns square bracketed key when value not found.
 
 ## has\_any\_value
 
@@ -103,35 +135,44 @@ Check exist or not key in dictionary.
 
 Where `main` - is dictionary, `key.subkey` - key at dictionary.
 
-## maketext
+- set\_fallback
 
-same as t, but parameters for substitute are sequential
+        $self->set_fallback( 'by_BY', 'ru_RU', 'en_US');
+        $self->set_fallback( 'by_BY', [ 'ru_RU', 'en_US' ] );
 
-    $self->maketext( 'dict', 'key.subkey ' , $param1, ... $paramN );
+    Set fallbacks for given locale.
 
-Where `dict` - is dictionary, `key.subkey` - key at dictionary.
+    When \`locale\` has no translation for the phrase, fallbacks\[0\] will be
+    tried, if translation still not found, then fallbacks\[1\] will be tried
+    and so on. If none of fallbacks have translation,
+    default locale will be tried as last resort.
 
 # DICTIONARIES
 
 ## Phrases Syntax
 
 \#{varname} Echoes value of variable
-((Singular|Plural1|Plural2)):count Plural form
+((Singular|Plural1|Plural2)):variable Plural form
+((Singular|Plural1|Plural2)) Short plural form for "count" variable
 
 Example:
 
-    I have #{count} ((nail|nails)):count
+    I have #{nails_count} ((nail|nails)):nails_count
 
 or short form
 
     I have #{count} ((nail|nails))
+
+or with zero and onу plural forms:
+
+    I have ((=0 no nails|=1 a nail|#{nails_count} nail|#{nails_count} nails)):nails_count
 
 ## Dictionary file example
 
 Module support only YAML format. Create dictionary file like: **dictionary.en\_US.yaml** where
 `dictionary` is name of dictionary and `en_US` - its locale.
 
-    profile: Profiel
+    profile:
         apps:
             forums:
                 new_topic: New topic
@@ -140,37 +181,26 @@ Module support only YAML format. Create dictionary file like: **dictionary.en\_U
     demo:
         apples: I have #{count} ((apple|apples))
 
-## Custom plural forms
-
-By default locale will be inherited from `en_US`. If you would like specify own, create module like
-this and implement **quant\_word** function.
-
-    package Locale::Babelfish::Lang::uk_UA;
-
-    use strict;
-    use parent 'Locale::Babelfish::Maketext';
-
-    sub quant_word {
-        my ($self, $num, $single, $plural1, $plural2) = @_;
-
-        my $num_s   = $num % 10;
-        my $num_dec = $num % 100;
-        my $ret;
-
-        if    ($num_dec >= 10 and $num_dec <= 20) { $ret = $plural2 || $plural1 || $single }
-        elsif ($num_s == 1)                       { $ret = $single }
-        elsif ($num_s >= 2 and $num_s <= 4)       { $ret = $plural1 || $single }
-        else                                      { $ret = $plural2 || $plural1 || $single }
-        return $ret;
-    }
-
 ## Encoding
 
-Use any convinient encoding. But better use utf8 with BOM.
+UTF-8 (Perl internal encoding).
+
+## DETAILS
+
+Dictionaries loaded at instance construction stage.
+
+All scalar values will be saved as scalar refs if needs compilation
+(has Babelfish control sequences).
+
+t\_or\_undef method translates specified key value.
+
+Result will be compiled when scalarref. Result of compilation is scalar or coderef.
+
+Result will be executed when coderef.
+
+Scalar/hashref/arrayref will be returned as is.
 
 # SEE ALSO
-
-[Locale::Maketext::Lexicon](https://metacpan.org/pod/Locale::Maketext::Lexicon)
 
 [https://github.com/nodeca/babelfish](https://github.com/nodeca/babelfish)
 
@@ -187,3 +217,23 @@ This software is Copyright (c) 2014 by Igor Mironov.
 This is free software, licensed under:
 
     The MIT (X11) License
+
+# POD ERRORS
+
+Hey! **The above document had some coding errors, which are explained below:**
+
+- Around line 79:
+
+    '=item' outside of any '=over'
+
+- Around line 94:
+
+    You forgot a '=back' before '=head2'
+
+- Around line 142:
+
+    '=item' outside of any '=over'
+
+- Around line 154:
+
+    You forgot a '=back' before '=head1'
