@@ -4,7 +4,7 @@ Locale::Babelfish - Perl I18n using github://nodeca/babelfish format.
 
 # VERSION
 
-version 0.06
+version 1.0
 
 # SYNOPSIS
 
@@ -206,13 +206,13 @@ Scalar/hashref/arrayref will be returned as is.
 
 # AUTHORS
 
+- Akzhan Abdulin <akzhan@cpan.org>
 - Igor Mironov <grif@cpan.org>
-- Crazy Panda LLC
 - REG.RU LLC
 
 # COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2014 by Igor Mironov.
+This software is Copyright (c) 2014 by Akzhan Abdulin.
 
 This is free software, licensed under:
 
