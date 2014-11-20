@@ -1,89 +1,120 @@
+use utf8;
 use strict;
+use warnings;
+
 use Test::Deep;
-use Test::More tests => 18;
+use Test::More;
 
 use FindBin qw($Bin);
 
-use utf8;
+use Test::Builder ();
+
+binmode $_, ':encoding(UTF-8)' for map { Test::Builder->new->$_ } qw(output failure_output);
 
 use_ok( 'Locale::Babelfish' ) or exit 1;
 
-my $dir = "$Bin";
+my $l10n = Locale::Babelfish->new({
+    dirs           => [ $Bin ],
+    default_locale => 'en_US',
+});
 
-my $cfg = {
-        dirs         => [ $dir ],
-        dictionaries => ['test'],
-        default_lang => 'en_US',
-        langs        => [ 'ru_RU', 'en_US' ],
-};
+is(
+    $l10n->t( 'test1.developers.some.test' ),
+    '[test1.developers.some.test]',
+    'not existing key',
+);
 
-my $l10n = Locale::Babelfish->new( $cfg, undef );
-
-cmp_ok( $l10n->t('test1.developers.some.test', {} ) ,
-        'eq', '[Babelfish:test1.developers.some.test]'
+is(
+    $l10n->t( 'test.simple', { dummy => ' test script ' } ),
+    'I am ',
+    'dummy_parameter',
  );
 
-cmp_ok( $l10n->t('test.simple', { dummy => ' test script ' } ) ,
-        'eq', 'I am ' , 'dummy_parameter'
+is(
+    $l10n->t( 'test.dummy_key', { who => ' test script ' } ),
+    '[test.dummy_key]' ,
+    'dummy_key',
  );
 
-cmp_ok( $l10n->t('test.dummy_key', { who => ' test script ' } ) ,
-        'eq', '[Babelfish:test.dummy_key]' , 'dummy_key'
+is(
+    $l10n->t( 'test.simple', { who => 'test script' } ),
+    'I am test script',
+    'simple_var',
  );
 
-cmp_ok( $l10n->t('test.simple', { who => 'test script' } ) ,
-        'eq', 'I am test script' , 'simple_var'
+is(
+    $l10n->t( 'test.case1.combine', { single => { test => { deep => 'example'} } , count => 10 , test => 2 } ),
+    'I have 10 nails for example for 2 tests',
+    'check2',
+);
+
+is(
+    $l10n->t( 'test.plural.case1', { test => 10 } ),
+    'I have 10 nails',
+    'plural1',
+);
+
+is(
+    $l10n->t( 'test.plural.case1', { test => 1 } ),
+    'I have 1 nail',
+    'plural2',
+);
+
+is(
+    $l10n->t( 'test.plural.case2', { test => 1 } ),
+    'I have 1 nail simple using',
+    'plural3',
  );
 
-cmp_ok( $l10n->maketext('test' , 'case1.combine' , 10 , "example", 1) ,
-        'eq' , 'I have 10 nails for example for 1 test', 'check1' );
+is(
+    $l10n->t( 'test.plural.case3', 17 ),
+    'I have 17 big nails',
+    'plural4',
+);
 
-cmp_ok( $l10n->t('test.case1.combine', { single => { test => { deep => 'example'} } , count => 10 , test => 2 } ) ,
-        'eq' , 'I have 10 nails for example for 2 tests', 'check2' );
+is(
+    $l10n->has_any_value( 'test.plural.case1' ),
+    1,
+    'has_any_value found',
+);
 
-cmp_ok( $l10n->t('test.plural.case1', { test => 10 } ) ,
-        'eq', 'I have 10 nails' , 'plural1'
- );
+is(
+    $l10n->has_any_value( 'test.plural.case1123' ),
+    0,
+    'has_any_value not found',
+);
 
-cmp_ok( $l10n->t('test.plural.case1', { test => 1 } ) ,
-        'eq', 'I have 1 nail' , 'plural2'
- );
+$l10n->locale( 'ru_RU' );
 
-cmp_ok( $l10n->t('test.plural.case2', { test => 1 } ) ,
-        'eq', 'I have 1 nail simple using' , 'plural3'
- );
+is(
+    $l10n->locale,
+    'ru_RU',
+    'Check current locale',
+);
 
-cmp_ok( $l10n->t('test.plural.case3', 17 ) ,
-        'eq', 'I have 17 big nails' , 'plural4'
- );
+is(
+    $l10n->t( 'test.simple.plural.nails4', { test => 1, test2 => 20 } ),
+    'Берём 1 гвоздь для 20 досок и вбиваем 1 гвоздь в 20 досок',
+    'repeat_twice',
+);
 
-cmp_ok( $l10n->has_any_value('test.plural.case1' ) ,
-        '==', 1 , 'has_any_value'
- );
+is(
+    $l10n->t( 'test.simple.plural.nails', { test => 10 } ),
+    'У меня 10 гвоздей',
+    'RU plural1',
+);
 
-cmp_ok( $l10n->has_any_value('test.plural.case1123' ) ,
-        '==', 0 , 'has_any_value'
- );
+is(
+    $l10n->t( 'test.simple.plural.nails', { test => 3 } ),
+    'У меня 3 гвоздя',
+    'RU plural2',
+);
 
-$l10n->set_locale('ru_RU');
-
-cmp_ok( $l10n->current_locale , 'eq', 'ru_RU', 'Check current locale');
-
-cmp_ok( $l10n->t('test.simple.plural.nails4', { test => 1, test2 => 20 } ) ,
-        'eq', 'Берём 1 гвоздь для 20 досок и вбиваем 1 гвоздь в 20 досок' , 'repeat_twice'
- );
-
-cmp_ok( $l10n->t('test.simple.plural.nails', { test => 10 } ) ,
-        'eq', 'У меня 10 гвоздей' , 'RU plural1'
- );
-
-cmp_ok( $l10n->t('test.simple.plural.nails', { test => 3 } ) ,
-        'eq', 'У меня 3 гвоздя' , 'RU plural2'
- );
-
-cmp_ok( $l10n->t('test.simple.plural.nails3', { test => 1 } ) ,
-        'eq', '1 у меня гвоздь' , 'RU plural3'
- );
+is(
+    $l10n->t( 'test.simple.plural.nails3', { test => 1 } ),
+    '1 у меня гвоздь',
+    'RU plural3',
+);
 
 done_testing;
 

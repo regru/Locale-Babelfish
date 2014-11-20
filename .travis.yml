@@ -4,6 +4,7 @@ notifications:
     recipients:
         - mironov.igor@reg.ru
         - a.gerasimov@reg.ru
+        - akzhan.abdulin@reg.ru
 
 perl:
     # - "5.19"
