@@ -98,9 +98,7 @@ Loads dictionaries recursively on specified path.
     $self->phrase_need_compilation( $phrase, $key )
     $class->phrase_need_compilation( $phrase, $key )
 
-Определяет, требуется ли компиляция фразы.
-
-Используется также при компиляции плюралов (вложенные выражения).
+Is phrase need parsing and compilation.
 
 ## t\_or\_undef
 

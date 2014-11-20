@@ -295,9 +295,7 @@ sub _load_dictionary {
     $self->phrase_need_compilation( $phrase, $key )
     $class->phrase_need_compilation( $phrase, $key )
 
-Определяет, требуется ли компиляция фразы.
-
-Используется также при компиляции плюралов (вложенные выражения).
+Is phrase need parsing and compilation.
 
 =cut
 
