@@ -1,5 +1,7 @@
 package Locale::Babelfish::Phrase::PluralForms;
 
+# ABSTRACT: Babelfish AST pluralization node.
+
 use utf8;
 use strict;
 use warnings;
@@ -11,6 +13,8 @@ use Scalar::Util (); # используется в скомпилированн�
 use Locale::Babelfish::Phrase::Compiler ();
 
 use parent qw( Locale::Babelfish::Phrase::Node );
+
+# VERSION
 
 __PACKAGE__->mk_accessors( qw( forms name compiled locale ) );
 

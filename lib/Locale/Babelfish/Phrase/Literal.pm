@@ -1,5 +1,7 @@
 package Locale::Babelfish::Phrase::Literal;
 
+# ABSTRACT: Babelfish AST Literal node.
+
 use utf8;
 use strict;
 use warnings;
@@ -7,6 +9,8 @@ use warnings;
 use Locale::Babelfish::Phrase::Pluralizer ();
 
 use parent qw( Locale::Babelfish::Phrase::Node );
+
+# VERSION
 
 __PACKAGE__->mk_accessors( qw( text ) );
 

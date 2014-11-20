@@ -1,8 +1,12 @@
 package Locale::Babelfish::Phrase::Variable;
 
+# ABSTRACT: Babelfish AST Variable substitution node.
+
 use utf8;
 use strict;
 use warnings;
+
+# VERSION
 
 use parent qw( Locale::Babelfish::Phrase::Node );
 

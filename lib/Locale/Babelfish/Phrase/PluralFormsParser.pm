@@ -1,5 +1,7 @@
 package Locale::Babelfish::Phrase::PluralFormsParser;
 
+# ABSTRACT: Babelfish plurals syntax parser.
+
 use utf8;
 use strict;
 use warnings;
@@ -15,11 +17,13 @@ SRX::L10N::Phrase::PluralFormsParser
 
 =head1 DESCRIPTION
 
-Возвращает { script_forms => {}, regular_forms = [] }
+Returns { script_forms => {}, regular_forms = [] }
 
-Каждая форма - также список узлов, пропущенных через Parser.
+Every plural form represented as AST.
 
 =cut
+
+# VERSION
 
 use parent qw( Class::Accessor::Fast );
 

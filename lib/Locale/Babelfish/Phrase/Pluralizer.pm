@@ -1,10 +1,14 @@
 package Locale::Babelfish::Phrase::Pluralizer;
 
+# ABSTRACT: Babelfish pluralizer.
+
 use utf8;
 use strict;
 use warnings;
 
 use List::Util qw( first );
+
+# VERSION
 
 =encoding utf-8
 
@@ -14,9 +18,10 @@ SRX::L10N::Phrase::Pluralizer
 
 =head1 DESCRIPTION
 
-Реализация склонений.
+Pluralization implementation.
 
 =cut
+
 my %rules;
 
 sub add {

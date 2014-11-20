@@ -1,5 +1,7 @@
 package Locale::Babelfish::Phrase::Parser;
 
+# ABSTRACT: Babelfish syntax parser.
+
 use utf8;
 use strict;
 use warnings;
@@ -11,6 +13,8 @@ use Locale::Babelfish::Phrase::PluralForms ();
 use Locale::Babelfish::Phrase::PluralFormsParser ();
 
 use parent qw( Locale::Babelfish::Phrase::ParserBase );
+
+# VERSION
 
 __PACKAGE__->mk_accessors( qw( locale mode pieces escape pf0 ) );
 

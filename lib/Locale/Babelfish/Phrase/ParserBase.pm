@@ -1,10 +1,14 @@
 package Locale::Babelfish::Phrase::ParserBase;
 
+# ABSTRACT: Babelfish abstract parser.
+
 use utf8;
 use strict;
 use warnings;
 
 use parent qw( Class::Accessor::Fast );
+
+# VERSION
 
 __PACKAGE__->mk_accessors( qw( phrase index length prev piece escape ) );
 

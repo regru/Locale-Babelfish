@@ -1,5 +1,15 @@
 package Locale::Babelfish::Phrase::Compiler;
 
+# ABSTRACT: Babelfish AST Compiler
+
+#
+
+=head1 DESCRIPTION
+
+Compiles AST to string or to coderef.
+
+=cut
+
 use utf8;
 use strict;
 use warnings;
@@ -11,6 +21,8 @@ use Locale::Babelfish::Phrase::Variable ();
 use Locale::Babelfish::Phrase::PluralForms ();
 
 use parent qw( Class::Accessor::Fast );
+
+# VERSION
 
 __PACKAGE__->mk_accessors( qw( ast ) );
 
