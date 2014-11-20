@@ -42,11 +42,11 @@ More sophisticated example:
     print $bf->t( 'dictionary.firstkey.nextkey', { count => 90, value => 90 } );
 
     # set locale
-    $bf->set_locale( 'en_US' );
+    $bf->locale( 'en_US' );
     print $bf->t( 'dictionary.firstkey.nextkey', { foo => 'bar' } );
 
     # Get current locale
-    print $bf->current_locale;
+    print $bf->locale;
 
 =head1 DICTIONARIES
 
