@@ -71,20 +71,20 @@ Gets or sets current locale.
     $self->locale;
     $self->locale( 'en_GB' );
 
-- prepare\_to\_compile
+## prepare\_to\_compile
 
-        $self->prepare_to_compile()
+    $self->prepare_to_compile()
 
-    Marks dictionary values as refscalars, is they need compilation.
-    Or simply compiles them.
+Marks dictionary values as refscalars, is they need compilation.
+Or simply compiles them.
 
-- detect\_locale
+## detect\_locale
 
-        $self->detect_locale( $locale );
+    $self->detect_locale( $locale );
 
-    Detects locale by specified locale/language.
+Detects locale by specified locale/language.
 
-    Returns default locale unless detected.
+Returns default locale unless detected.
 
 ## load\_dictionaries
 
@@ -134,17 +134,17 @@ Check exist or not key in dictionary.
 
 Where `main` - is dictionary, `key.subkey` - key at dictionary.
 
-- set\_fallback
+## set\_fallback
 
-        $self->set_fallback( 'by_BY', 'ru_RU', 'en_US');
-        $self->set_fallback( 'by_BY', [ 'ru_RU', 'en_US' ] );
+    $self->set_fallback( 'by_BY', 'ru_RU', 'en_US');
+    $self->set_fallback( 'by_BY', [ 'ru_RU', 'en_US' ] );
 
-    Set fallbacks for given locale.
+Set fallbacks for given locale.
 
-    When \`locale\` has no translation for the phrase, fallbacks\[0\] will be
-    tried, if translation still not found, then fallbacks\[1\] will be tried
-    and so on. If none of fallbacks have translation,
-    default locale will be tried as last resort.
+When \`locale\` has no translation for the phrase, fallbacks\[0\] will be
+tried, if translation still not found, then fallbacks\[1\] will be tried
+and so on. If none of fallbacks have translation,
+default locale will be tried as last resort.
 
 # DICTIONARIES
 
@@ -216,23 +216,3 @@ This software is Copyright (c) 2014 by Akzhan Abdulin.
 This is free software, licensed under:
 
     The MIT (X11) License
-
-# POD ERRORS
-
-Hey! **The above document had some coding errors, which are explained below:**
-
-- Around line 78:
-
-    '=item' outside of any '=over'
-
-- Around line 93:
-
-    You forgot a '=back' before '=head2'
-
-- Around line 141:
-
-    '=item' outside of any '=over'
-
-- Around line 153:
-
-    You forgot a '=back' before '=head1'

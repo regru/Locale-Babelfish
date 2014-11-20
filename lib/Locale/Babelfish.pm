@@ -179,7 +179,7 @@ sub locale {
     $self->{locale} = $self->detect_locale( $_[0] );
 }
 
-=item prepare_to_compile
+=method prepare_to_compile
 
     $self->prepare_to_compile()
 
@@ -201,7 +201,7 @@ sub prepare_to_compile {
     return 1;
 }
 
-=item detect_locale
+=method detect_locale
 
     $self->detect_locale( $locale );
 
@@ -438,8 +438,7 @@ sub has_any_value {
     return 0;
 }
 
-
-=item set_fallback
+=method set_fallback
 
     $self->set_fallback( 'by_BY', 'ru_RU', 'en_US');
     $self->set_fallback( 'by_BY', [ 'ru_RU', 'en_US' ] );
@@ -491,6 +490,5 @@ sub _flat_hash_keys {
 L<https://github.com/nodeca/babelfish>
 
 =cut
-
 
 1;
