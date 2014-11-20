@@ -59,10 +59,9 @@ Created for using same dictionaries on Perl and JavaScript.
 Constructor
 
     my $bf = Locale::Babelfish->new( {
-        dirs => [ '/path/to/dictionaries' ], # is required
-        suffix => 'yaml', # dictionaries extension
-        default_lang => 'ru_RU', # by default en_US
-        langs => [ 'de_DE', 'fr_FR', 'uk_UA' => 'Foo::Bar::Lang::uk_UA' ]
+        dirs           => [ '/path/to/dictionaries' ], # is required
+        suffix         => 'yaml', # dictionaries extension
+        default_locale => 'ru_RU', # by default en_US
     } );
 
 ## locale
@@ -222,18 +221,18 @@ This is free software, licensed under:
 
 Hey! **The above document had some coding errors, which are explained below:**
 
-- Around line 79:
+- Around line 78:
 
     '=item' outside of any '=over'
 
-- Around line 94:
+- Around line 93:
 
     You forgot a '=back' before '=head2'
 
-- Around line 142:
+- Around line 141:
 
     '=item' outside of any '=over'
 
-- Around line 154:
+- Around line 153:
 
     You forgot a '=back' before '=head1'

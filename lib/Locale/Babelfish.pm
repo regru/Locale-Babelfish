@@ -138,10 +138,9 @@ my $compiler = Locale::Babelfish::Phrase::Compiler->new();
 Constructor
 
     my $bf = Locale::Babelfish->new( {
-        dirs => [ '/path/to/dictionaries' ], # is required
-        suffix => 'yaml', # dictionaries extension
-        default_lang => 'ru_RU', # by default en_US
-        langs => [ 'de_DE', 'fr_FR', 'uk_UA' => 'Foo::Bar::Lang::uk_UA' ]
+        dirs           => [ '/path/to/dictionaries' ], # is required
+        suffix         => 'yaml', # dictionaries extension
+        default_locale => 'ru_RU', # by default en_US
     } );
 
 =cut
