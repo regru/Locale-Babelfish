@@ -53,7 +53,8 @@ sub _to_perl_sub {
 
     my $text = "#line 49 \"". __FILE__. "\"
     sub { my ( \$params ) = \@_;
-        my ( \$value, \$rule, \$strict_forms, \$regular_forms ) = ( \$params->{ $name },
+        my ( \$value, \$rule, \$strict_forms, \$regular_forms ) = (
+            \$params->{ $name },
             \@{ \$Locale::Babelfish::Phrase::PluralForms::sub_data[$index] },
         );
         my \$r;
@@ -63,7 +64,7 @@ sub _to_perl_sub {
             \$r = \$regular_forms->[ -1 ];
         }
         else {
-            \$r = \$strict_forms->{\$value} // \$regular_forms->[ \$rule->(\$value) ];
+            \$r = \$strict_forms->{\$value} // \$regular_forms->[ \$rule->(\$value) ] // \$regular_forms->[ -1 ];
         }
         return ref(\$r) ? \$r->(\$params) : ( \$r // '' );
     }";
