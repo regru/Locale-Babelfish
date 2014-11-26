@@ -25,12 +25,27 @@ use constant {
     VARIABLE_RE   => qr/^[a-zA-Z0-9_\.]+$/a,
 };
 
+=method new
+
+    $class->new()
+    $class->new( $phrase )
+
+Instantiates parser.
+
+=cut
+
 sub new {
     my ( $class, $phrase, $locale ) = @_;
     my $self = $class->SUPER::new( $phrase );
     $self->locale( $locale )  if $locale;
     return $self;
 }
+
+=method init
+
+Initializes parser. Should not be called directly.
+
+=cut
 
 sub init {
     my ( $self, $phrase ) = @_;
@@ -40,6 +55,12 @@ sub init {
     $self->pf0( undef ); # plural forms without name yet
     return $self;
 }
+
+=method finalize_mode
+
+Finalizes all operations after phrase end.
+
+=cut
 
 sub finalize_mode {
     my ( $self ) = @_;
@@ -59,6 +80,15 @@ sub finalize_mode {
         $self->throw( "Logic broken, unknown parser mode: ". $self->mode );
     }
 }
+
+=method parse
+
+    $parser->parse()
+    $parser->parse( $phrase )
+
+Parses specified phrase.
+
+=cut
 
 sub parse {
     my ( $self, $phrase, $locale ) = @_;

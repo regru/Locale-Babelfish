@@ -26,6 +26,15 @@ __PACKAGE__->mk_accessors( qw( ast ) );
 
 my $sub_index = 0;
 
+=method new
+
+    $class->new()
+    $class->new( $ast )
+
+Instantiates AST compiler.
+
+=cut
+
 sub new {
     my ( $class, $ast ) = @_;
     my $parser = bless {}, $class;
@@ -33,39 +42,42 @@ sub new {
     return $parser;
 }
 
+=method init
+
+Initializes compiler. Should not be called directly.
+
+=cut
+
 sub init {
     my ( $self, $ast ) = @_;
     $self->ast( $ast );
     return $self;
 }
 
+=method throw
+
+    $self->throw( $message )
+
+Throws given message in compiler context.
+
+=cut
+
 sub throw {
     my ( $self, $message ) = @_;
     die "Cannot compile: $message";
 }
 
-sub concatenate_literals {
-    my ( $self ) = @_;
-    my $new_ast = [];
-    my $prev = undef;
-    for my $node ( @{ $self->ast } ) {
-        if ( ref($node) eq 'SRX::L10N::Phrase::Literal' && ref($prev) eq ref($node) ) {
-            $prev->text( $prev->text. $node->text );
-            next;
-        }
-        $prev = $node;
-        push @{ $new_ast }, $node;
-    }
+=method compile
 
-    $self->ast( $new_ast );
+    $self->compile()
+    $self->compile( $ast )
 
-    return 1;
-}
+Compiles AST.
 
-sub optimize {
-    my ( $self ) = @_;
-    $self->concatenate_literals;
-}
+Result is string when possible; coderef otherwise.
+
+=cut
+
 
 sub compile {
     my ( $self, $ast ) = @_;
@@ -74,8 +86,6 @@ sub compile {
 
     $self->throw("No AST given")  unless $self->ast;
     $self->throw("Empty AST given")  if scalar( @{ $self->ast } ) == 0;
-
-    $self->optimize;
 
     if ( scalar( @{ $self->ast } ) == 1 && ref($self->ast->[0]) eq 'Locale::Babelfish::Phrase::Literal' ) {
         #  просто строка

@@ -4,7 +4,7 @@ Locale::Babelfish - Perl I18n using github://nodeca/babelfish format.
 
 # VERSION
 
-version 1.0
+version 1.000000
 
 # SYNOPSIS
 

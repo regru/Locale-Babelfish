@@ -7,8 +7,8 @@ use strict;
 use warnings;
 use feature 'state';
 
-use Carp (); # используется в скомпилированной подпрограмме.
-use Scalar::Util (); # используется в скомпилированной подпрограмме.
+use Carp (); # used inside compiled sub.
+use Scalar::Util (); # used inside compiled sub.
 
 use Locale::Babelfish::Phrase::Compiler ();
 
@@ -19,6 +19,14 @@ use parent qw( Locale::Babelfish::Phrase::Node );
 __PACKAGE__->mk_accessors( qw( forms name compiled locale ) );
 
 our @sub_data = ();
+
+=method to_perl_sub
+
+    $node->to_perl_sub
+
+Return sub that represents current node execution.
+
+=cut
 
 sub to_perl_sub {
     my ( $self ) = @_;

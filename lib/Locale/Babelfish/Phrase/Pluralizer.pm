@@ -18,12 +18,26 @@ Pluralization implementation.
 
 my %rules;
 
+=method add
+
+Adds locale pluralization rule. Should not be called directly.
+
+=cut
+
 sub add {
     my ( $locales, $rule ) = @_;
     $locales = [ $locales ]  unless ref($locales);
 
     $rules{$_} = $rule  for @$locales;
 }
+
+=method find_rule
+
+    find_rule( $locale )
+
+Finds locale pluralization rule. It is coderef.
+
+=cut
 
 sub find_rule {
     my ( $locale ) = @_;
@@ -36,7 +50,14 @@ sub find_rule {
     return $rules{$locale};
 }
 
-# check if number is int or float
+=method is_int
+
+    is_int( $input )
+
+Check if number is int or float.
+
+=cut
+
 sub is_int {
     my ( $input ) = @_;
     return (0 == $input % 1);

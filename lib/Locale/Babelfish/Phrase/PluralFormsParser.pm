@@ -23,12 +23,27 @@ use parent qw( Class::Accessor::Fast );
 
 __PACKAGE__->mk_accessors( qw( phrase strict_forms regular_forms ) );
 
+=method new
+
+    $class->new()
+    $class->new( $phrase )
+
+Instantiates parser.
+
+=cut
+
 sub new {
     my ( $class, $phrase ) = @_;
     my $parser = bless {}, $class;
     $parser->init( $phrase )  if defined $phrase;
     return $parser;
 }
+
+=method init
+
+Initializes parser. Should not be called directly.
+
+=cut
 
 sub init {
     my ( $self, $phrase ) = @_;
@@ -37,6 +52,15 @@ sub init {
     $self->strict_forms( {} );
     return $self;
 }
+
+=method parse
+
+    $parser->parse()
+    $parser->parse( $phrase )
+
+Parses specified phrase.
+
+=cut
 
 sub parse {
     my ( $self, $phrase ) = @_;

@@ -14,6 +14,14 @@ use parent qw( Locale::Babelfish::Phrase::Node );
 
 __PACKAGE__->mk_accessors( qw( text ) );
 
+=method to_perl_escaped_str
+
+    $str = $node->to_perl_escaped_str
+
+Returns node string to be used in Perl source code.
+
+=cut
+
 sub to_perl_escaped_str {
     my ( $self ) = @_;
 
