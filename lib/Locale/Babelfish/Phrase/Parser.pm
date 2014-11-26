@@ -22,7 +22,7 @@ use constant {
     LITERAL_MODE  => 'Locale::Babelfish::Phrase::Literal',
     VARIABLE_MODE => 'Locale::Babelfish::Phrase::Variable',
     PLURALS_MODE  => 'Locale::Babelfish::Phrase::PluralForms',
-    VARIABLE_RE   => qr/^[a-zA-Z0-9_\.]+$/a,
+    VARIABLE_RE   => qr/^[a-zA-Z0-9_\.]+$/,
 };
 
 =method new
