@@ -214,7 +214,7 @@ Returns default locale unless detected.
 sub detect_locale {
     my ( $self, $locale ) = @_;
     return $locale  if $self->dictionaries->{$locale};
-    my $alt_locale = first { $_ =~ m/\A\Q$locale\E[\-_]/iaa } keys %{ $self->dictionaries };
+    my $alt_locale = first { $_ =~ m/\A\Q$locale\E[\-_]/i } keys %{ $self->dictionaries };
     if ( $alt_locale && $self->dictionaries->{$alt_locale} ) {
         # Lets locale dictionary will refer to alt locale dictinary.
         # This speeds up all subsequent calls of t/detect/exists on this locale.
