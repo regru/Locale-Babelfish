@@ -24,6 +24,8 @@ before_install:
     - "cpanm -q -n Test::Pod"
     - "cpanm -q -n Pod::Coverage::TrustPod"
     - "cpanm -q -n Pod::Weaver::Plugin::Encoding"
+    - "cpanm -q -n Test::EOL"
+    - "cpanm -q -n Test::NoTabs"
 
 install:
     - "dzil authordeps --missing | xargs cpanm -q -n && dzil listdeps --missing | xargs cpanm -q -n"
