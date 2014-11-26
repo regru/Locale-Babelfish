@@ -65,7 +65,7 @@ Finalizes all operations after phrase end.
 sub finalize_mode {
     my ( $self ) = @_;
     if ( $self->mode eq LITERAL_MODE ) {
-        push $self->pieces, LITERAL_MODE->new( text => $self->piece )
+        push @{ $self->pieces }, LITERAL_MODE->new( text => $self->piece )
             if length($self->piece) || scalar(@{ $self->pieces }) == 0;
     }
     elsif ( $self->mode eq VARIABLE_MODE ) {
@@ -74,7 +74,7 @@ sub finalize_mode {
     elsif ( $self->mode eq PLURALS_MODE ) {
         $self->throw( "Plural forms definition not ended with \"))\": ". $self->piece )
             unless defined $self->pf0;
-        push $self->pieces, PLURALS_MODE->new( forms => $self->pf0, name => $self->piece, locale => $self->locale, );
+        push @{ $self->pieces }, PLURALS_MODE->new( forms => $self->pf0, name => $self->piece, locale => $self->locale, );
     }
     else {
         $self->throw( "Logic broken, unknown parser mode: ". $self->mode );
@@ -120,7 +120,7 @@ sub parse {
 
             if ( $char eq '#' && $self->next_char eq '{' ) {
                 if ( length $self->piece ) {
-                    push $self->pieces, LITERAL_MODE->new( text => $self->piece );
+                    push @{ $self->pieces }, LITERAL_MODE->new( text => $self->piece );
                     $self->piece('');
                 }
                 $self->to_next_char; # skip "{"
@@ -130,7 +130,7 @@ sub parse {
 
             if ( $char eq '(' && $self->next_char eq '(' ) {
                 if ( length $self->piece ) {
-                    push $self->pieces, LITERAL_MODE->new( text => $self->piece );
+                    push @{ $self->pieces }, LITERAL_MODE->new( text => $self->piece );
                     $self->piece('');
                 }
                 $self->to_next_char; # skip second "("
@@ -159,7 +159,7 @@ sub parse {
                 if ( $name !~ VARIABLE_RE ) {
                     $self->throw( "Variable name doesn't meet conditions: $name." );
                 }
-                push $self->pieces, VARIABLE_MODE->new( name => $name );
+                push @{ $self->pieces }, VARIABLE_MODE->new( name => $name );
                 $self->piece('');
                 $self->mode( LITERAL_MODE );
                 next;
@@ -173,7 +173,7 @@ sub parse {
                     next;
                 }
                 else {
-                    push $self->pieces, PLURALS_MODE->new( forms => $self->pf0, name => $self->piece, locale => $self->locale, );
+                    push @{ $self->pieces }, PLURALS_MODE->new( forms => $self->pf0, name => $self->piece, locale => $self->locale, );
                     $self->pf0( undef );
                     $self->mode( LITERAL_MODE );
                     $self->piece('');
@@ -189,7 +189,7 @@ sub parse {
                     $self->to_next_char; # skip ":"
                     next;
                 }
-                push $self->pieces, PLURALS_MODE->new( forms => $self->pf0, name => 'count', locale => $self->locale, );
+                push @{ $self->pieces }, PLURALS_MODE->new( forms => $self->pf0, name => 'count', locale => $self->locale, );
                 $self->pf0( undef );
                 $self->mode( LITERAL_MODE );
                 next;
