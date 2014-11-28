@@ -2,6 +2,8 @@
 
 Locale::Babelfish - Perl I18n using github://nodeca/babelfish format.
 
+[![Build Status](https://travis-ci.org/regru/Locale-Babelfish.svg?branch=master)](https://travis-ci.org/regru/Locale-Babelfish)
+
 # VERSION
 
 version 1.000000
