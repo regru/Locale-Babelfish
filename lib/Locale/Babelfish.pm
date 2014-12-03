@@ -1,6 +1,6 @@
 package Locale::Babelfish;
 
-# ABSTRACT: Perl I18n using github://nodeca/babelfish format.
+# ABSTRACT: Perl I18n using https://github.com/nodeca/babelfish format.
 
 =head1 DESCRIPTION
 
