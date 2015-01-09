@@ -2,6 +2,11 @@ Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
 
+    [ FEATURES ]
+    - "watch" option added that allow to automatically
+      reload all dictionaries if something changed on disk.
+      We do not recommend use this option in production.
+
     [ MISC ]
     - fixed 'missing_build_prereqs' error
 
