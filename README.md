@@ -102,6 +102,18 @@ Loads dictionaries recursively on specified path.
 
 Is phrase need parsing and compilation.
 
+## on\_watcher\_change
+
+    $self->on_watcher_change()
+
+Reloads all dictionaries.
+
+## look\_for\_watchers
+
+    $self->look_for_watchers()
+
+Checks that all files unchanged or calls ["on\_watcher\_change"](#on_watcher_change).
+
 ## t\_or\_undef
 
 Get internationalized value for key from dictionary.
@@ -198,6 +210,8 @@ Result will be compiled when scalarref. Result of compilation is scalar or coder
 Result will be executed when coderef.
 
 Scalar/hashref/arrayref will be returned as is.
+
+Watch option supported.
 
 # SEE ALSO
 

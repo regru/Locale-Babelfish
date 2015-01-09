@@ -101,6 +101,8 @@ Result will be executed when coderef.
 
 Scalar/hashref/arrayref will be returned as is.
 
+Watch option supported.
+
 =cut
 
 use utf8;
@@ -118,6 +120,10 @@ use Locale::Babelfish::Phrase::Compiler ();
 
 use parent qw( Class::Accessor::Fast );
 
+use constant {
+    MTIME_INDEX => 9,
+};
+
 # VERSION
 
 __PACKAGE__->mk_accessors( qw(
@@ -125,13 +131,34 @@ __PACKAGE__->mk_accessors( qw(
     fallbacks
     fallback_cache
     dirs
-    _suffix
+    suffix
     default_locale
     file_filter
+    watch
+    watchers
 ) );
 
 my $parser = Locale::Babelfish::Phrase::Parser->new();
 my $compiler = Locale::Babelfish::Phrase::Compiler->new();
+
+=for Pod::Coverage _built_config
+
+=cut
+
+sub _built_config {
+    my ( $cfg ) = @_;
+    return {
+        dictionaries   => {},
+        dirs           => [ "./locales" ],
+        fallbacks      => {},
+        fallback_cache => {},
+        suffix         => $cfg->{suffix} // 'yaml',
+        default_locale => $cfg->{default_locale} // 'en_US',
+        watch          => $cfg->{watch} || 0,
+        watchers       => {},
+        %{ $cfg // {} },
+    };
+}
 
 =method new
 
@@ -147,15 +174,10 @@ Constructor
 
 sub new {
     my ( $class, $cfg ) = @_;
-    $cfg //= {};
+
     my $self = bless {
-        dictionaries   => {},
-        dirs           => [ "./locales" ],
-        fallbacks      => {},
-        fallback_cache => {},
-        _suffix        => $cfg->{suffix} // 'yaml',
-        default_locale => $cfg->{default_locale} // 'en_US',
-        %{ $cfg },
+        _cfg => $cfg,
+        %{ _built_config( $cfg ) },
     }, $class;
 
     $self->load_dictionaries( $self->file_filter );
@@ -258,7 +280,7 @@ sub load_dictionaries {
                 my @tmp = split m/\./, $base;
 
                 my $cur_suffix = pop @tmp;
-                return  if $cur_suffix ne $self->_suffix;
+                return  if $cur_suffix ne $self->suffix;
                 my $locale = pop @tmp;
 
                 my $dictname = join('.', @tmp);
@@ -288,6 +310,10 @@ sub _load_dictionary {
     my $yaml = LoadFile( $file );
 
     _flat_hash_keys( $yaml, "$dictname.", $self->dictionaries->{$lang} );
+
+    return  unless $self->watch;
+
+    $self->watchers->{$file} = (stat($file))[MTIME_INDEX];
 }
 
 =method phrase_need_compilation
@@ -308,6 +334,48 @@ sub phrase_need_compilation {
         ;
 }
 
+=method on_watcher_change
+
+    $self->on_watcher_change()
+
+Reloads all dictionaries.
+
+=cut
+
+sub on_watcher_change {
+    my ( $self ) = @_;
+    delete $self->{keys %$self};
+    my %new_cfg = %{ _built_config( $self->{_cfg} ) };
+    while( my ( $key, $value ) = each %new_cfg ) {
+        $self->{$key} = $value;
+    }
+    $self->load_dictionaries;
+    $self->locale( $self->{default_locale} );
+}
+
+=method look_for_watchers
+
+    $self->look_for_watchers()
+
+Checks that all files unchanged or calls L</on_watcher_change>.
+
+=cut
+
+
+sub look_for_watchers {
+    my ( $self ) = @_;
+    my $ok = 1;
+    while ( my ( $file, $mtime ) = each %{ $self->watchers } ) {
+        my $new_mtime = (stat($file))[MTIME_INDEX];
+        if ( !defined( $mtime ) || !defined( $new_mtime ) || $new_mtime != $mtime ) {
+            $ok = 0;
+            last;
+        }
+    }
+    return  if $ok;
+    $self->on_watcher_change();
+}
+
 =method t_or_undef
 
 Get internationalized value for key from dictionary.
@@ -326,6 +394,10 @@ sub t_or_undef {
 
     # disallow non-ASCII keys
     confess("wrong dictname_key: $dictname_key")  if $dictname_key =~ m/\P{ASCII}/;
+
+    if ( $self->{watch} ) {
+        $self->look_for_watchers();
+    }
 
     my $locale = $custom_locale ? $self->detect_locale( $custom_locale ) : $self->{locale};
 
@@ -419,6 +491,10 @@ sub has_any_value {
 
     # disallow non-ASCII keys
     confess("wrong dictname_key: $dictname_key")  if $dictname_key =~ m/\P{ASCII}/;
+
+    if ( $self->{watch} ) {
+        $self->look_for_watchers();
+    }
 
     my $locale = $custom_locale ? $self->detect_locale( $custom_locale ) : $self->{locale};
 
