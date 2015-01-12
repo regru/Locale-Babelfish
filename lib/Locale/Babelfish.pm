@@ -267,15 +267,17 @@ sub load_dictionaries {
     my ( $self, $filter ) = @_;
 
     for my $dir ( @{$self->dirs} ) {
+        my $fdir = File::Spec->rel2abs( $dir );
         find( {
             follow   => 1,
             no_chdir => 1,
             wanted   => sub {
                 my $file = File::Spec->rel2abs( $File::Find::name );
                 return  unless -f $file;
+                return  if $filter && !$filter->($file);
+
                 my ( $volume, $directories, $base ) = File::Spec->splitpath( $file );
 
-                return  if $filter && !$filter->($file);
 
                 my @tmp = split m/\./, $base;
 
@@ -285,7 +287,6 @@ sub load_dictionaries {
 
                 my $dictname = join('.', @tmp);
                 my $subdir = File::Spec->catpath( $volume, $directories, '' );
-                my $fdir = File::Spec->rel2abs( $dir );
                 if ( $subdir =~ m/\A\Q$fdir\E[\\\/](.+)\z/) {
                     $dictname = "$1$dictname";
                 }
