@@ -148,6 +148,12 @@ Moves cursor backward.
 sub backward {
     my ( $self ) = @_;
     $self->index( $self->index - 1 );
+    if ( $self->index > 0 ) {
+        $self->prev( substr( $self->phrase, $self->index - 1, 1 ) );
+    }
+    else {
+        $self->prev( undef );
+    }
 }
 
 =method parse
