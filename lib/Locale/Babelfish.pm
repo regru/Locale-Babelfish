@@ -354,17 +354,20 @@ sub on_watcher_change {
     $self->locale( $self->{default_locale} );
 }
 
-=method look_for_watchers
+=method check_for_changes
 
-    $self->look_for_watchers()
+    $self->check_for_changes()
 
 Checks that all files unchanged or calls L</on_watcher_change>.
+
+Works when watch option set only.
 
 =cut
 
 
-sub look_for_watchers {
+sub check_for_changes {
     my ( $self ) = @_;
+    return  unless $self->{watch};
     my $ok = 1;
     while ( my ( $file, $mtime ) = each %{ $self->watchers } ) {
         my $new_mtime = (stat($file))[MTIME_INDEX];
@@ -395,10 +398,6 @@ sub t_or_undef {
 
     # disallow non-ASCII keys
     confess("wrong dictname_key: $dictname_key")  if $dictname_key =~ m/\P{ASCII}/;
-
-    if ( $self->{watch} ) {
-        $self->look_for_watchers();
-    }
 
     my $locale = $custom_locale ? $self->detect_locale( $custom_locale ) : $self->{locale};
 
@@ -492,10 +491,6 @@ sub has_any_value {
 
     # disallow non-ASCII keys
     confess("wrong dictname_key: $dictname_key")  if $dictname_key =~ m/\P{ASCII}/;
-
-    if ( $self->{watch} ) {
-        $self->look_for_watchers();
-    }
 
     my $locale = $custom_locale ? $self->detect_locale( $custom_locale ) : $self->{locale};
 

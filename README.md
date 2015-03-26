@@ -108,11 +108,13 @@ Is phrase need parsing and compilation.
 
 Reloads all dictionaries.
 
-## look\_for\_watchers
+## check\_for\_changes
 
-    $self->look_for_watchers()
+    $self->check_for_changes()
 
 Checks that all files unchanged or calls ["on\_watcher\_change"](#on_watcher_change).
+
+Works when watch option set only.
 
 ## t\_or\_undef
 

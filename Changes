@@ -7,6 +7,8 @@ Revision history for Perl extension Locale::Babelfish.
       reload all dictionaries if something changed on disk.
       We do not recommend use this option in production.
 
+    - call "check_for_changes" method to watch.
+
     [ MISC ]
     - fixed 'missing_build_prereqs' error
 
