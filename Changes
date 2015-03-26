@@ -2,6 +2,8 @@ Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
 
+1.000001 Thu Mar 26 14:52:43 2015 +0000
+
     [ FEATURES ]
     - "watch" option added that allow to automatically
       reload all dictionaries if something changed on disk.
