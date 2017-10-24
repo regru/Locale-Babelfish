@@ -113,7 +113,7 @@ use Carp qw/ confess /;
 use File::Find qw( find );
 use File::Spec ();
 
-use SRS::Utils::YAML qw( load_yaml_unicode );
+use Reg::YAML qw( load_yaml );
 use Locale::Babelfish::Phrase::Parser ();
 use Locale::Babelfish::Phrase::Compiler ();
 
@@ -406,7 +406,7 @@ sub load_dictionary {
 
     $self->dictionaries->{$lang} //= {};
 
-    my $yaml = load_yaml_unicode( $file );
+    my $yaml = load_yaml( $file );
 
     _flat_hash_keys( $yaml, "$dictname.", $self->dictionaries->{$lang} );
 
