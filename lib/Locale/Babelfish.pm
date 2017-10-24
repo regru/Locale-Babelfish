@@ -113,8 +113,6 @@ use Carp qw/ confess /;
 use File::Find qw( find );
 use File::Spec ();
 
-use SRS::Conf;
-use SRS::Config;
 use SRS::Utils::YAML qw( load_yaml_unicode );
 use Locale::Babelfish::Phrase::Parser ();
 use Locale::Babelfish::Phrase::Compiler ();
@@ -154,7 +152,6 @@ sub _built_config {
     my ( $cfg ) = @_;
     return {
         dictionaries   => {},
-        dirs           => [ cfg->path('config', 'locales') ],
         fallbacks      => {},
         fallback_cache => {},
         suffix         => $cfg->{suffix} // 'yaml',
@@ -477,7 +474,7 @@ sub detect_locale {
     my @alt_locales = grep { $_ =~ m/\A\Q$locale\E[\-_]/i } keys %{ $self->dictionaries };
     confess "only one alternative locale allowed: ", join ',', @alt_locales
         if @alt_locales > 1;
-    
+
     my $alt_locale = $alt_locales[0];
     if ( $alt_locale && $self->dictionaries->{$alt_locale} ) {
         # сделаем locale dictionary ссылкой на alt locale dictinary.
