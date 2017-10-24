@@ -11,14 +11,14 @@ use Test::Spec;
 use Test::Exception;
 use Test::More::UTF8;
 
-use SRS::L10N::Phrase::Parser ();
+use Locale::Babelfish::Phrase::Parser ();
 
 
-describe "SRS::L10N::Phrase::Parser" => sub {
+describe "Locale::Babelfish::Phrase::Parser" => sub {
     my $parser;
 
     before all => sub {
-        $parser = new_ok 'SRS::L10N::Phrase::Parser';
+        $parser = new_ok 'Locale::Babelfish::Phrase::Parser';
     };
 
     it "should die on undef" => sub {

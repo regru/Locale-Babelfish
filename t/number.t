@@ -11,12 +11,12 @@ use utf8;
 use Test::Spec;
 use Test::More::UTF8;
 
-describe "SRS::L10N::Number" => sub {
+describe "Locale::Babelfish::Number" => sub {
     my $l10n = undef;
 
     before all => sub {
-        require_ok "SRS::L10N::Lib2";
-        $l10n = new_ok "SRS::L10N::Lib2";
+        require_ok "Locale::Babelfish";
+        $l10n = new_ok "Locale::Babelfish";
     };
 
     it "should format decimal in spanish" => sub {

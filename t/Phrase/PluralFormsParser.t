@@ -10,14 +10,14 @@ use SRS::Perl;
 use Test::Spec;
 use Test::More::UTF8;
 
-use SRS::L10N::Phrase::PluralFormsParser ();
-use SRS::L10N::Phrase::Literal ();
+use Locale::Babelfish::Phrase::PluralFormsParser ();
+use Locale::Babelfish::Phrase::Literal ();
 
-describe "SRS::L10N::Phrase::PluralFormsParser" => sub {
+describe "Locale::Babelfish::Phrase::PluralFormsParser" => sub {
     my $parser;
 
     before all => sub {
-        $parser = new_ok "SRS::L10N::Phrase::PluralFormsParser";
+        $parser = new_ok "Locale::Babelfish::Phrase::PluralFormsParser";
     };
 
     describe init => sub {
@@ -43,9 +43,9 @@ describe "SRS::L10N::Phrase::PluralFormsParser" => sub {
             cmp_deeply $parser->parse("a|b|c"), {
                 strict => {},
                 regular => [
-                    [ SRS::L10N::Phrase::Literal->new( text => 'a' ) ],
-                    [ SRS::L10N::Phrase::Literal->new( text => 'b' ) ],
-                    [ SRS::L10N::Phrase::Literal->new( text => 'c' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'a' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'b' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'c' ) ],
                 ],
             };
         };
@@ -53,9 +53,9 @@ describe "SRS::L10N::Phrase::PluralFormsParser" => sub {
         it "should parse strict forms" => sub {
             cmp_deeply $parser->parse("=1a|=0 b|=4 c"), {
                 strict => {
-                    1 => [ SRS::L10N::Phrase::Literal->new( text => 'a' ) ],
-                    0 => [ SRS::L10N::Phrase::Literal->new( text => 'b' ) ],
-                    4 => [ SRS::L10N::Phrase::Literal->new( text => 'c' ) ],
+                    1 => [ Locale::Babelfish::Phrase::Literal->new( text => 'a' ) ],
+                    0 => [ Locale::Babelfish::Phrase::Literal->new( text => 'b' ) ],
+                    4 => [ Locale::Babelfish::Phrase::Literal->new( text => 'c' ) ],
                 },
                 regular => [],
             };
@@ -65,8 +65,8 @@ describe "SRS::L10N::Phrase::PluralFormsParser" => sub {
             cmp_deeply $parser->parse("a\\||b"), {
                 strict => {},
                 regular => [
-                    [ SRS::L10N::Phrase::Literal->new( text => 'a|' ) ],
-                    [ SRS::L10N::Phrase::Literal->new( text => 'b' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'a|' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'b' ) ],
                 ],
             };
         };
@@ -77,9 +77,9 @@ describe "SRS::L10N::Phrase::PluralFormsParser" => sub {
             cmp_deeply $prev_results, {
                 strict => {},
                 regular => [
-                    [ SRS::L10N::Phrase::Literal->new( text => 'a' ) ],
-                    [ SRS::L10N::Phrase::Literal->new( text => 'b' ) ],
-                    [ SRS::L10N::Phrase::Literal->new( text => 'c' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'a' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'b' ) ],
+                    [ Locale::Babelfish::Phrase::Literal->new( text => 'c' ) ],
                 ],
             };
         };

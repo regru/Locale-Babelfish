@@ -13,7 +13,7 @@ use Test::More::UTF8;
 use lib::abs ();
 use Data::Dumper;
 
-use_ok( 'SRS::L10N::Lib2' ) or exit;
+use_ok( 'Locale::Babelfish' ) or exit;
 
 my $dir = lib::abs::path('locales');
 
@@ -27,7 +27,7 @@ my $cfg = {
     },
 };
 
-my $l10n = SRS::L10N::Lib2->new( $cfg );
+my $l10n = Locale::Babelfish->new( $cfg );
 
 is(
     $l10n->set_fallback( 'ru_RU', 'en_US' ),

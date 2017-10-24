@@ -5,7 +5,6 @@ package Locale::Babelfish::Phrase::Parser;
 use utf8;
 use strict;
 use warnings;
-use feature "state";
 
 use Locale::Babelfish::Phrase::Literal ();
 use Locale::Babelfish::Phrase::Variable ();
@@ -96,7 +95,7 @@ sub parse {
     $self->SUPER::parse( $phrase );
     $self->locale( $locale )  if $locale;
 
-    state $plurals_parser = Locale::Babelfish::Phrase::PluralFormsParser->new();
+    my $plurals_parser = Locale::Babelfish::Phrase::PluralFormsParser->new();
 
     while ( 1 ) {
         my $char = $self->to_next_char;

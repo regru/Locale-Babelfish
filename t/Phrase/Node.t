@@ -10,14 +10,14 @@ use SRS::Perl;
 use Test::Spec;
 use Test::More::UTF8;
 
-use SRS::L10N::Phrase::Node ();
+use Locale::Babelfish::Phrase::Node ();
 
 
-describe "SRS::L10N::Phrase::Node" => sub {
+describe "Locale::Babelfish::Phrase::Node" => sub {
     my $node;
 
     before all => sub {
-        $node = new_ok 'SRS::L10N::Phrase::Node', [ a => 1 ];
+        $node = new_ok 'Locale::Babelfish::Phrase::Node', [ a => 1 ];
     };
 
     it "should save new args" => sub {

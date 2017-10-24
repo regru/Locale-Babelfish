@@ -12,7 +12,7 @@ use Test::More::UTF8;
 use File::Spec ();
 
 use SRS::Config;
-use SRS::L10N::Lib2 ();
+use Locale::Babelfish ();
 
 describe localize_datetime => sub {
     my $l10n;
@@ -26,7 +26,7 @@ describe localize_datetime => sub {
             File::Spec->file_name_is_absolute( $_ ) ? $_ : File::Spec->rel2abs( $_, cfg->base_path );
         } @{ $cfg->{dirs} } ];
 
-        $l10n = SRS::L10N::Lib2->new( $cfg );
+        $l10n = Locale::Babelfish->new( $cfg );
         $time = time();
         ( $mday, $min ) = (localtime( $time ))[3, 1];
     };
