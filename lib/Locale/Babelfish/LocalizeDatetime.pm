@@ -16,7 +16,7 @@ use SRS::Perl;
 use POSIX qw( strftime );
 use Time::Piece;
 use Time::Local qw( timelocal );
-use SRS::Utils::Math qw( round );
+use Reg::Utils::Math qw( round );
 
 =head1 METHODS
 
