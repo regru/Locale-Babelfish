@@ -118,11 +118,7 @@ use Locale::Babelfish::Phrase::Parser ();
 use Locale::Babelfish::Phrase::Compiler ();
 
 
-use parent qw(
-    Class::Accessor::Fast
-    Locale::Babelfish::LocalizeDatetime
-    Locale::Babelfish::Number
-);
+use parent qw( Class::Accessor::Fast );
 
 use constant {
     MTIME_INDEX => 9,
