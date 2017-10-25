@@ -313,21 +313,7 @@ $params - хэш параметров
 sub t {
     my $self = shift;
 
-    my $translated = $self->t_or_undef(@_);
-    unless( $translated ) {
-        require SRS::Utils::Sentry;
-        require SRS::Utils::Log;
-
-        state $sentry = SRS::Utils::Sentry::create_sentry_logger(project => 'srs-perl', tags => {type => 'l10n'});
-        state $logger = SRS::Utils::Log::create_logger('l10n');
-
-        # $sentry->error('NO_DICTIONARY_ENTRY_FOUND', extra => {
-        #     key => $_[0],
-        # });
-        $logger->error( 'NO_DICTIONARY_ENTRY_FOUND', { key => $_[ 0 ] });
-        return "[$_[0]]";
-    }
-    return $translated;
+    return $self->t_or_undef( @_ ) || "[$_[0]]";
 }
 
 =item has_any_value
