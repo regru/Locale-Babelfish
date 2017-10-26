@@ -38,6 +38,8 @@ is(
 my $t;
 $t = $l10n->t('test1.developers.some.test');
 $l10n->locale('ru');
+
+
 # проверяем что будет если не правильный словарь
 is( $t, '[test1.developers.some.test]', "Got [\$key] on absent dictionary" );
 
@@ -147,4 +149,3 @@ is $l10n->t('test.simple.escapes', { who => 'Man', count => '1' }), 'I have #{wh
 }
 
 done_testing;
-

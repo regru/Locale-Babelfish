@@ -1,5 +1,7 @@
 package Locale::Babelfish;
 
+# ABSTRACT: Perl I18n using https://github.com/nodeca/babelfish format.
+
 =encoding utf-8
 
 =head1 NAME
@@ -44,11 +46,11 @@ More sophisticated example:
     print $bf->t( 'dictionary.firstkey.nextkey', { count => 90, value => 90 } );
 
     # set locale
-    $bf->set_locale( 'en_US' );
+    $bf->locale( 'en_US' );
     print $bf->t( 'dictionary.firstkey.nextkey', { foo => 'bar' } );
 
     # Get current locale
-    print $bf->current_locale;
+    print $bf->locale;
 
 =head1 DICTIONARIES
 
@@ -107,13 +109,14 @@ $self->{dictionaries}->{ru_RU}->{dictname_key}...
 =cut
 
 use utf8;
-use SRS::Perl;
+use strict;
+use warnings;
 
 use Carp qw/ confess /;
 use File::Find qw( find );
 use File::Spec ();
 
-use Reg::YAML qw( load_yaml );
+use YAML::SyckWrapper qw( load_yaml );
 use Locale::Babelfish::Phrase::Parser ();
 use Locale::Babelfish::Phrase::Compiler ();
 

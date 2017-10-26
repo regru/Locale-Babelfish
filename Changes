@@ -1,6 +1,9 @@
 Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
+    -
+
+1.000001
 
     [ FEATURES ]
     - "watch" option added that allow to automatically
