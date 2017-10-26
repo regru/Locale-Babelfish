@@ -1,12 +1,12 @@
 # NAME
 
-Locale::Babelfish
+Locale::Babelfish - Perl I18n using https://github.com/nodeca/babelfish format.
 
 [![Build Status](https://travis-ci.org/regru/Locale-Babelfish.svg?branch=master)](https://travis-ci.org/regru/Locale-Babelfish)
 
 # VERSION
 
-version 1.000001
+version 2.001
 
 # DESCRIPTION
 
@@ -50,11 +50,11 @@ More sophisticated example:
     print $bf->t( 'dictionary.firstkey.nextkey', { count => 90, value => 90 } );
 
     # set locale
-    $bf->set_locale( 'en_US' );
+    $bf->locale( 'en_US' );
     print $bf->t( 'dictionary.firstkey.nextkey', { foo => 'bar' } );
 
     # Get current locale
-    print $bf->current_locale;
+    print $bf->locale;
 
 # DICTIONARIES
 
@@ -112,6 +112,10 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 
 # METHODS
 
+- locale
+
+    Если указана локаль, устанавливет её. Если нет - возвращает.
+
 - on\_watcher\_change
 
     Перечитывает все словари.
@@ -149,6 +153,14 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
     Проверяет есть ли ключ в словаре
 
     первой частью в ключе должен идти словарь, например, main.
+
+- load\_dictionaries
+
+    Загружает все yaml словари с диска
+
+- load\_dictionary
+
+    Загружает один yaml словарь с диска
 
 - phrase\_need\_compilation
 
@@ -200,7 +212,7 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 
 # COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2014 by Akzhan Abdulin.
+This software is Copyright (c) 2014 by REG.RU LLC.
 
 This is free software, licensed under:
 

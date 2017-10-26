@@ -2,6 +2,8 @@ package Locale::Babelfish;
 
 # ABSTRACT: Perl I18n using https://github.com/nodeca/babelfish format.
 
+# VERSION
+
 =encoding utf-8
 
 =head1 NAME
@@ -175,6 +177,12 @@ sub new {
     return $self;
 }
 
+=item locale
+
+Если указана локаль, устанавливет её. Если нет - возвращает.
+
+=cut
+
 sub locale {
     my $self = shift;
     return $self->{locale}  if scalar(@_) == 0;
@@ -346,6 +354,12 @@ sub has_any_value {
 
 }
 
+=item load_dictionaries
+
+Загружает все yaml словари с диска
+
+=cut
+
 sub load_dictionaries {
     my $self = shift;
 
@@ -385,6 +399,12 @@ sub load_dictionaries {
     }
     $self->prepare_to_compile;
 }
+
+=item load_dictionary
+
+Загружает один yaml словарь с диска
+
+=cut
 
 sub load_dictionary {
     my ( $self, $dictname, $lang, $file ) = @_;
