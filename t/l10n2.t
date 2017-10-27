@@ -4,7 +4,8 @@ ok
 
 =cut
 
-use SRS::Perl;
+use strict;
+use warnings;
 use utf8;
 
 use Test::Deep;

@@ -1,7 +1,15 @@
 Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
-    -
+
+    - Added some missing test dependencies
+
+2.002
+    - Removed one internal (unexisting on CPAN) dependency
+
+2.001
+
+    - Bulk backport of changes. Can cause minor compatibility problems
 
 1.000001
 

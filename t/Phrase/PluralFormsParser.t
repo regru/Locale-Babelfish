@@ -5,7 +5,9 @@ ok
 =cut
 
 use utf8;
-use SRS::Perl;
+use strict;
+use warnings;
+
 
 use Test::Spec;
 use Test::More::UTF8;
