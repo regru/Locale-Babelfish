@@ -6,13 +6,21 @@ Locale::Babelfish - Perl I18n using https://github.com/nodeca/babelfish format.
 
 # VERSION
 
-version 1.000000
+version 2.003
 
-# SYNOPSIS
+# DESCRIPTION
+
+Библиотека локализации.
+
+# NAME
+
+Locale::Babelfish
+
+# SYNOPSYS
 
     package Foo;
 
-    use Locale::Babelfish;
+    use Locale::Babelfish ();
 
     my $bf = Locale::Babelfish->new( { dirs => [ '/path/to/dictionaries' ] } );
     print $bf->t('dictionary.firstkey.nextkey', { foo => 'bar' } );
@@ -21,7 +29,7 @@ More sophisticated example:
 
     package Foo::Bar;
 
-    use Locale::Babelfish;
+    use Locale::Babelfish ();
 
     my $bf = Locale::Babelfish->new( {
         # configuration
@@ -47,118 +55,6 @@ More sophisticated example:
 
     # Get current locale
     print $bf->locale;
-
-# DESCRIPTION
-
-Internationalisation with easy syntax
-
-Created for using same dictionaries on Perl and JavaScript.
-
-# METHODS
-
-## new
-
-Constructor
-
-    my $bf = Locale::Babelfish->new( {
-        dirs           => [ '/path/to/dictionaries' ], # is required
-        suffix         => 'yaml', # dictionaries extension
-        default_locale => 'ru_RU', # by default en_US
-    } );
-
-## locale
-
-Gets or sets current locale.
-
-    $self->locale;
-    $self->locale( 'en_GB' );
-
-## prepare\_to\_compile
-
-    $self->prepare_to_compile()
-
-Marks dictionary values as refscalars, is they need compilation.
-Or simply compiles them.
-
-## detect\_locale
-
-    $self->detect_locale( $locale );
-
-Detects locale by specified locale/language.
-
-Returns default locale unless detected.
-
-## load\_dictionaries
-
-Loads dictionaries recursively on specified path.
-
-    $self->load_dictionaries;
-    $self->load_dictionaries( \&filter( $file_path ) );
-
-## phrase\_need\_compilation
-
-    $self->phrase_need_compilation( $phrase, $key )
-    $class->phrase_need_compilation( $phrase, $key )
-
-Is phrase need parsing and compilation.
-
-## on\_watcher\_change
-
-    $self->on_watcher_change()
-
-Reloads all dictionaries.
-
-## check\_for\_changes
-
-    $self->check_for_changes()
-
-Checks that all files unchanged or calls ["on\_watcher\_change"](#on_watcher_change).
-
-Works when watch option set only.
-
-## t\_or\_undef
-
-Get internationalized value for key from dictionary.
-
-    $self->t_or_undef( 'main.key.subkey' );
-    $self->t_or_undef( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
-    $self->t_or_undef( 'main.key.subkey' , { param1 => 1 }, $specific_locale );
-    $self->t_or_undef( 'main.key.subkey' , 1 );
-
-Where `main` - is dictionary, `key.subkey` - key at dictionary.
-
-## t
-
-Get internationalized value for key from dictionary.
-
-    $self->t( 'main.key.subkey' );
-    $self->t( 'main.key.subkey' , { param1 => 1 , param2 => { next_level  => 'test' } } );
-    $self->t( 'main.key.subkey' , { param1 => 1 }, $specific_locale );
-    $self->t( 'main.key.subkey' , 1 );
-
-Where `main` - is dictionary, `key.subkey` - key at dictionary.
-
-Returns square bracketed key when value not found.
-
-## has\_any\_value
-
-Check exist or not key in dictionary.
-
-    $self->has_any_value( 'main.key.subkey' );
-
-Where `main` - is dictionary, `key.subkey` - key at dictionary.
-
-## set\_fallback
-
-    $self->set_fallback( 'by_BY', 'ru_RU', 'en_US');
-    $self->set_fallback( 'by_BY', [ 'ru_RU', 'en_US' ] );
-
-Set fallbacks for given locale.
-
-When \`locale\` has no translation for the phrase, fallbacks\[0\] will be
-tried, if translation still not found, then fallbacks\[1\] will be tried
-and so on. If none of fallbacks have translation,
-default locale will be tried as last resort.
 
 # DICTIONARIES
 
@@ -194,40 +90,130 @@ Module support only YAML format. Create dictionary file like: **dictionary.en\_U
     demo:
         apples: I have #{count} ((apple|apples))
 
-## Encoding
+# DETAILS
 
-UTF-8 (Perl internal encoding).
+Словари грузятся при создании экземпляра, сразу в плоской форме
+$self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 
-## DETAILS
+Причем все скалярные значения, при необходимости (есть спецсимволы Babelfish),
+преобразуются в ссылки на скаляры (флаг - "нужно скомпилировать").
 
-Dictionaries loaded at instance construction stage.
+Метод t\_or\_undef получает значение по указанному ключу.
 
-All scalar values will be saved as scalar refs if needs compilation
-(has Babelfish control sequences).
+Если это ссылка на скаляр, то парсит и компилирует строку.
 
-t\_or\_undef method translates specified key value.
+Результат компиляции либо ссылка на подпрограмму, лмбо просто строка.
 
-Result will be compiled when scalarref. Result of compilation is scalar or coderef.
+Если это ссылка на подпрограмму, мы просто вызываем ее с плоскими параметрами.
 
-Result will be executed when coderef.
+Если просто строка, то возвращаем её as is.
 
-Scalar/hashref/arrayref will be returned as is.
+Поддерживается обция watch.
 
-Watch option supported.
+# METHODS
 
-# SEE ALSO
+- locale
 
-[https://github.com/nodeca/babelfish](https://github.com/nodeca/babelfish)
+    Если указана локаль, устанавливет её. Если нет - возвращает.
+
+- on\_watcher\_change
+
+    Перечитывает все словари.
+
+- look\_for\_watchers
+
+    Обновляет словари оп мере необходимости, через ["on\_watcher\_change"](#on_watcher_change).
+
+- t\_or\_undef
+
+        $self->t_or_undef( 'main.key.subkey' , { paaram1 => 1 , param2 => 'test' } , 'ru' );
+
+    Локализация по ключу.
+
+    первой частью в ключе $key должен идти словарь, например, main.key
+    параметр языка не обязательный.
+
+    $params - хэш параметров
+
+- t
+
+        $self->t( 'main.key.subkey' , { paaram1 => 1 , param2 => 'test' } , 'ru' );
+
+    Локализация по ключу.
+
+    первой частью в ключе $key должен идти словарь, например, main.key
+    параметр языка не обязательный.
+
+    $params - хэш параметров
+
+- has\_any\_value
+
+        $self->has_any_value( 'main.key.subkey' );
+
+    Проверяет есть ли ключ в словаре
+
+    первой частью в ключе должен идти словарь, например, main.
+
+- load\_dictionaries
+
+    Загружает все yaml словари с диска
+
+- load\_dictionary
+
+    Загружает один yaml словарь с диска
+
+- phrase\_need\_compilation
+
+        $self->phrase_need_compilation( $phrase, $key )
+        $class->phrase_need_compilation( $phrase, $key )
+
+    Определяет, требуется ли компиляция фразы.
+
+    Используется также при компиляции плюралов (вложенные выражения).
+
+- prepare\_to\_compile
+
+        $self->prepare_to_compile()
+
+    Либо маркирует как refscalar строки в словарях, требующие компиляции,
+    либо просто компилирует их.
+
+- detect\_locale
+
+        $self->detect_locale( $locale );
+
+    Определяем какой язык будет использован.
+    приоритет $locale, далее default\_locale.
+
+- set\_fallback
+
+        $self->set_fallback( 'by_BY', 'ru_RU', 'en_US');
+        $self->set_fallback( 'by_BY', [ 'ru_RU', 'en_US' ] );
+
+    Для указанной локали устанавливает список локалей, на которые будет производится откат
+    в случае отсутствия фразы в указанной.
+
+    Например, в вышеуказанных примерах при отсутствии фразы в
+    белорусской локали будет затем искаться фраза в русской локали,
+    затем в англоамериканской.
+
+- \_flat\_hash\_keys
+
+        _flat_hash_keys( $hash, '', $result );
+
+    Внутренняя, рекурсивная.
+    Преобразует хэш любой вложенности в строку, где ключи хешей разделены точками.
 
 # AUTHORS
 
 - Akzhan Abdulin <akzhan@cpan.org>
 - Igor Mironov <grif@cpan.org>
+- Victor Efimov <efimov@reg.ru>
 - REG.RU LLC
 
 # COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2014 by Akzhan Abdulin.
+This software is Copyright (c) 2014 by REG.RU LLC.
 
 This is free software, licensed under:
 
