@@ -257,6 +257,9 @@ sub t_or_undef {
             $self->{dictionaries}->{$locale}->{$dictname_key} = $r = $compiler->compile(
                 $parser->parse( $$r, $locale ),
             );
+        } elsif ( ref( $r ) eq 'ARRAY' ) {
+            $self->{dictionaries}{$locale}{$dictname_key} = $r
+                                                          = _process_list_items( $r, $locale );
         }
     }
      # fallbacks
@@ -275,6 +278,9 @@ sub t_or_undef {
                         $self->{dictionaries}->{$_}->{$dictname_key} = $r = $compiler->compile(
                             $parser->parse( $$r, $_ ),
                         );
+                    } elsif ( ref( $r ) eq 'ARRAY' ) {
+                        $self->{dictionaries}{$locale}{$dictname_key} = $r
+                                                                      = _process_list_items( $r, $locale );
                     }
                     last;
                 }
@@ -548,6 +554,38 @@ sub _flat_hash_keys {
         }
     }
     return 1;
+}
+
+=item _process_list_items
+
+    _process_list_items( $dictinary_values);
+
+Обрабатывает ключи словарей содержащие списки, и оборачивает в фунцию для компиляции списка
+
+=cut
+
+sub _process_list_items {
+    my ( $r, $locale ) = @_;
+
+    my @compiled_items;
+
+    for my $item ( @{ $r } ) {
+        push @compiled_items, $compiler->compile( $parser->parse( $item, $locale ) );
+    }
+
+    return sub {
+        my $results = [];
+
+        for my $item ( @compiled_items )  {
+            if (ref( $item ) eq 'CODE' ) {
+                push @{ $results }, $item->(@_);
+            } else {
+                push @{ $results }, $item;
+            }
+        }
+
+        return $results;
+    };
 }
 
 =back
