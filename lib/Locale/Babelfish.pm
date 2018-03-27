@@ -257,7 +257,8 @@ sub t_or_undef {
             $self->{dictionaries}->{$locale}->{$dictname_key} = $r = $compiler->compile(
                 $parser->parse( $$r, $locale ),
             );
-        } elsif ( ref( $r ) eq 'ARRAY' ) {
+        }
+        elsif ( ref( $r ) eq 'ARRAY' ) {
             $self->{dictionaries}{$locale}{$dictname_key} = $r
                                                           = _process_list_items( $r, $locale );
         }
@@ -278,7 +279,8 @@ sub t_or_undef {
                         $self->{dictionaries}->{$_}->{$dictname_key} = $r = $compiler->compile(
                             $parser->parse( $$r, $_ ),
                         );
-                    } elsif ( ref( $r ) eq 'ARRAY' ) {
+                    }
+                    elsif ( ref( $r ) eq 'ARRAY' ) {
                         $self->{dictionaries}{$locale}{$dictname_key} = $r
                                                                       = _process_list_items( $r, $locale );
                     }
