@@ -2,6 +2,7 @@ Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
 
+2.004
     - Added some missing test dependencies
     - Added feature to work with lists in dictionaries
 

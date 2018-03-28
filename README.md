@@ -6,7 +6,7 @@ Locale::Babelfish - Perl I18n using https://github.com/nodeca/babelfish format.
 
 # VERSION
 
-version 2.003
+version 2.004
 
 # DESCRIPTION
 
@@ -89,6 +89,9 @@ Module support only YAML format. Create dictionary file like: **dictionary.en\_U
                     title : Last message
     demo:
         apples: I have #{count} ((apple|apples))
+        list:
+            - some content #{data}
+            - some other content #{data}
 
 # DETAILS
 
@@ -102,7 +105,10 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 
 Если это ссылка на скаляр, то парсит и компилирует строку.
 
-Результат компиляции либо ссылка на подпрограмму, лмбо просто строка.
+Если это ссылка на массив, то работаем со всеми элементами массива как со скалярами,
+собираем полученные результаты компиляции в новый массив и возвращаем ссылку на этот массив.
+
+Результат компиляции либо ссылка на подпрограмму, либо просто строка.
 
 Если это ссылка на подпрограмму, мы просто вызываем ее с плоскими параметрами.
 
@@ -203,6 +209,12 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 
     Внутренняя, рекурсивная.
     Преобразует хэш любой вложенности в строку, где ключи хешей разделены точками.
+
+- \_process\_list\_items
+
+        _process_list_items( $dictinary_values);
+
+    Обрабатывает ключи словарей содержащие списки, и оборачивает в фунцию для компиляции списка
 
 # AUTHORS
 
