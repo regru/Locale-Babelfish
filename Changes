@@ -1,6 +1,7 @@
 Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
+    - Fixing bug: Exception when list has undefined items, now we return undef as is
 
 2.004
     - Added some missing test dependencies
