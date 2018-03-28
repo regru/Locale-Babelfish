@@ -1,6 +1,8 @@
 Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
+
+2.005   Wed Mar 28 12:10:12 2018 +0000
     - Fixing bug: Exception when list has undefined items, now we return undef as is
 
 2.004
