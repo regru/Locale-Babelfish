@@ -6,7 +6,7 @@ Locale::Babelfish - Perl I18n using https://github.com/nodeca/babelfish format.
 
 # VERSION
 
-version 2.004
+version 2.005
 
 # DESCRIPTION
 
@@ -222,6 +222,7 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 - Igor Mironov <grif@cpan.org>
 - Victor Efimov <efimov@reg.ru>
 - REG.RU LLC
+- Kirill Sysoev <k.sysoev@me.com>
 
 # COPYRIGHT AND LICENSE
 
