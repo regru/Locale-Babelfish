@@ -112,13 +112,14 @@ $self->{dictionaries}->{ru_RU}->{dictname_key}...
 
 Если просто строка, то возвращаем её as is.
 
-Поддерживается обция watch.
+Поддерживается опция watch.
 
 =cut
 
 use utf8;
 use strict;
 use warnings;
+use Data::Dumper;
 
 use Carp qw/ confess /;
 use File::Find qw( find );
@@ -315,6 +316,7 @@ sub t_or_undef {
 
         return $r->( $flat_params );
     }
+
     return $r;
 }
 
@@ -566,9 +568,10 @@ sub _flat_hash_keys {
 
 =item _process_list_items
 
-    _process_list_items( $dictinary_values);
+    _process_list_items( $dictionary_values);
 
-Обрабатывает ключи словарей содержащие списки, и оборачивает в фунцию для компиляции списка
+Обрабатывает ключи словарей содержащие списки, и оборачивает в функцию для компиляции списка.
+Поддерживаются вложенные в список плоские хэшрефы
 
 =cut
 
@@ -577,9 +580,13 @@ sub _process_list_items {
 
     my @compiled_items;
     for my $item ( @{ $r } ) {
-        if ( defined $item ) {
+        if ( ref $item eq 'HASH' ) {
+            push @compiled_items, _process_nested_hash_item( $item, $locale );
+        }
+        elsif ( ref $item ne 'HASH' && defined $item ) {
             push @compiled_items, $compiler->compile( $parser->parse( $item, $locale ) );
-        } else {
+        }
+        else {
             push @compiled_items, $item;
         }
     }
@@ -588,15 +595,36 @@ sub _process_list_items {
         my $results = [];
 
         for my $item ( @compiled_items )  {
-            if (ref( $item ) eq 'CODE' ) {
+            if ( ref( $item ) eq 'CODE' ) {
                 push @{ $results }, $item->(@_);
-            } else {
+            }
+            # Нужно скомпилить значения в хэшрефе
+            elsif ( ref( $item ) eq 'HASH' ) {
+                while ( my ( $key, $value ) = each ( %$item ) ) {
+                    if ( ref ($value) eq 'CODE' ) {
+                        $item->{$key}  = $value->(@_);
+                    }
+                }
+                push @{ $results }, $item;
+            }
+            else {
                 push @{ $results }, $item;
             }
         }
 
         return $results;
     };
+}
+
+sub _process_nested_hash_item {
+    my ( $hashref, $locale ) = @_;
+
+    while ( my ( $key, $value ) = each ( %$hashref ) ) {
+        my $compiled_value = $compiler->compile( $parser->parse( $value, $locale ) );
+        $hashref->{$key}   = $compiled_value;
+    }
+
+    return $hashref;
 }
 
 =back
