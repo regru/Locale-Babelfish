@@ -6,7 +6,7 @@ Locale::Babelfish - Perl I18n using https://github.com/nodeca/babelfish format.
 
 # VERSION
 
-version 2.005
+version 2.10
 
 # DESCRIPTION
 
@@ -114,7 +114,7 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 
 Если просто строка, то возвращаем её as is.
 
-Поддерживается обция watch.
+Поддерживается опция watch.
 
 # METHODS
 
@@ -212,9 +212,10 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 
 - \_process\_list\_items
 
-        _process_list_items( $dictinary_values);
+        _process_list_items( $dictionary_values);
 
-    Обрабатывает ключи словарей содержащие списки, и оборачивает в фунцию для компиляции списка
+    Обрабатывает ключи словарей содержащие списки, и оборачивает в функцию для компиляции списка.
+    Поддерживаются вложенные в список плоские хэшрефы
 
 # AUTHORS
 
@@ -223,6 +224,7 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
 - Victor Efimov <efimov@reg.ru>
 - REG.RU LLC
 - Kirill Sysoev <k.sysoev@me.com>
+- Alexandr Tkach <tkach@reg.ru>
 
 # COPYRIGHT AND LICENSE
 
