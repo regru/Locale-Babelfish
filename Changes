@@ -2,6 +2,9 @@ Revision history for Perl extension Locale::Babelfish.
 
 {{$NEXT}}
 
+2.11 Thu Nov 09 17:41:00 2023 MSK
+    - Temporary bugfix of caching params in nested hashrefs in lists
+
 2.10 Wed Nov 30 15:01:00 2022 MSK
     - Added support of lists with flat (non-nested) hashrefs
     - Minor CS fixes
