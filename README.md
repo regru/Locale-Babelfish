@@ -6,7 +6,7 @@ Locale::Babelfish - Perl I18n using https://github.com/nodeca/babelfish format.
 
 # VERSION
 
-version 2.11
+version 2.12
 
 # DESCRIPTION
 
