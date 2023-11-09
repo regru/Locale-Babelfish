@@ -120,6 +120,7 @@ use utf8;
 use strict;
 use warnings;
 use Data::Dumper;
+use Storable 'dclone';
 
 use Carp qw/ confess /;
 use File::Find qw( find );
@@ -180,6 +181,7 @@ sub new {
 
     $self->load_dictionaries;
     $self->locale( $self->{default_locale} );
+    $self->{persistent_dicts} = dclone( $self->{dictionaries} );
 
     return $self;
 }
@@ -257,16 +259,15 @@ sub t_or_undef {
     my $locale = $custom_locale ? $self->detect_locale( $custom_locale ) : $self->{locale};
     my $r = $self->{dictionaries}->{$locale}->{$dictname_key};
 
+    # ХАК! Словари со вложенными списками могут портиться, поэтому необходимо восстанавливать их в исходном виде перед компиляцией
+    $self->{dictionaries} = $self->{persistent_dicts};
+
     if ( defined $r ) {
         if ( ref( $r ) eq 'SCALAR' ) {
-            $self->{dictionaries}->{$locale}->{$dictname_key} = $r = $compiler->compile(
-                $parser->parse( $$r, $locale ),
-            );
+            $r = $compiler->compile( $parser->parse( $$r, $locale ) );
         }
         elsif ( ref( $r ) eq 'ARRAY' ) {
-            $self->{dictionaries}{$locale}{$dictname_key} = $r = _process_list_items( $r, $locale );
-            ### ХАК! Портится содержимое списков с переменными во вложенных хэшрефах, необходимо перезагружать словари
-            $self->load_dictionaries();
+            $r = _process_list_items( $r, $locale );
         }
     }
      # fallbacks
@@ -282,13 +283,11 @@ sub t_or_undef {
                 $r = $self->{dictionaries}->{$_}->{$dictname_key};
                 if ( defined $r ) {
                     if ( ref( $r ) eq 'SCALAR' ) {
-                        $self->{dictionaries}->{$_}->{$dictname_key} = $r = $compiler->compile(
-                            $parser->parse( $$r, $_ ),
+                        $r = $compiler->compile( $parser->parse( $$r, $_ ),
                         );
                     }
                     elsif ( ref( $r ) eq 'ARRAY' ) {
-                        $self->{dictionaries}{$locale}{$dictname_key} = $r
-                                                                      = _process_list_items( $r, $locale );
+                        $r = _process_list_items( $r, $locale );
                     }
                     last;
                 }
@@ -470,9 +469,7 @@ sub prepare_to_compile {
     while ( my ($lang, $dic) = each(%{ $self->{dictionaries} }) ) {
         while ( my ($key, $value) = each(%$dic) ) {
             if ( $self->phrase_need_compilation( $value, $key ) ) {
-                $dic->{$key} = \$value; # отложенная компиляция
-                #my $ast = $parser->parse($value, $lang);
-                #$dic->{$key} = $compiler->compile( $ast );
+               $dic->{$key} = \$value; # отложенная компиляция
             }
         }
     }
