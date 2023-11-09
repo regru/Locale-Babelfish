@@ -250,13 +250,11 @@ $params - хэш параметров
 sub t_or_undef {
     my ( $self, $dictname_key, $params, $custom_locale ) = @_;
 
-
     confess 'No dictname_key' unless $dictname_key;
     # запрещаем ключи не ASCII
     confess("wrong dictname_key: $dictname_key")  if $dictname_key =~ m/\P{ASCII}/;
 
     my $locale = $custom_locale ? $self->detect_locale( $custom_locale ) : $self->{locale};
-
     my $r = $self->{dictionaries}->{$locale}->{$dictname_key};
 
     if ( defined $r ) {
@@ -266,8 +264,9 @@ sub t_or_undef {
             );
         }
         elsif ( ref( $r ) eq 'ARRAY' ) {
-            $self->{dictionaries}{$locale}{$dictname_key} = $r
-                                                          = _process_list_items( $r, $locale );
+            $self->{dictionaries}{$locale}{$dictname_key} = $r = _process_list_items( $r, $locale );
+            ### ХАК! Портится содержимое списков с переменными во вложенных хэшрефах, необходимо перезагружать словари
+            $self->load_dictionaries();
         }
     }
      # fallbacks
