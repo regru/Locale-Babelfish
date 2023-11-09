@@ -265,8 +265,6 @@ sub t_or_undef {
         }
         elsif ( ref( $r ) eq 'ARRAY' ) {
             $self->{dictionaries}{$locale}{$dictname_key} = $r = _process_list_items( $r, $locale );
-            ### ХАК! Портится содержимое списков с переменными во вложенных хэшрефах, необходимо перезагружать словари
-            $self->load_dictionaries();
         }
     }
      # fallbacks
@@ -599,12 +597,15 @@ sub _process_list_items {
             }
             # Нужно скомпилить значения в хэшрефе
             elsif ( ref( $item ) eq 'HASH' ) {
+                my $new_item = {};
                 while ( my ( $key, $value ) = each ( %$item ) ) {
                     if ( ref ($value) eq 'CODE' ) {
-                        $item->{$key}  = $value->(@_);
+                        $new_item->{$key}  = $value->(@_);
+                    } else {
+                        $new_item->{$key} = $value;
                     }
                 }
-                push @{ $results }, $item;
+                push @{ $results }, $new_item;
             }
             else {
                 push @{ $results }, $item;
