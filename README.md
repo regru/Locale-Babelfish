@@ -6,7 +6,7 @@ Locale::Babelfish - Perl I18n using https://github.com/nodeca/babelfish format.
 
 # VERSION
 
-version 2.12
+version 2.13
 
 # DESCRIPTION
 
@@ -215,7 +215,7 @@ $self->{dictionaries}->{ru\_RU}->{dictname\_key}...
         _process_list_items( $dictionary_values);
 
     Обрабатывает ключи словарей содержащие списки, и оборачивает в функцию для компиляции списка.
-    Поддерживаются вложенные в список плоские хэшрефы
+    Поддерживаются вложенные структуры в виде hashref и arrayref
 
 # AUTHORS
 
